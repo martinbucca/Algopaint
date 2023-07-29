@@ -240,7 +240,10 @@ def main():
                     undone_actions.pop()
                 if paint['selected color'] != '':
                     paint['bucket'] = True #PARA ACTIVAR EL BUCKET PRIMERO TENES QUE TENER UN COLOR SELECCIONADO
-        '''                  
+         
+        ''' 
+
+
 gamelib.init(main)
 
 
