@@ -35,13 +35,13 @@ def show_save_load_image_buttons(paint):
 
 def show_shortcut_colors(paint):
     '''Shows the shortcut colors in the interface'''
-    for color in MAIN_COLORS:
-        index_color = MAIN_COLORS.index(color)
-        x1, x2 = COLOR_POSITION * index_color + WIDTH_COLOR[0], COLOR_POSITION * index_color + WIDTH_COLOR[1]
-        outline = 'white' if color == paint['selected color'] else 'active'
-        width = 4 if color == paint['selected color'] else 1
-        gamelib.draw_rectangle(x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1], fill=color, outline=outline, width=width)
-
+    for color in MAIN_COLORS:   
+        index = MAIN_COLORS.index(color)
+        x1, x2 = COLOR_POSITION * index + WIDTH_COLOR[0], COLOR_POSITION * index + WIDTH_COLOR[1]
+        if color == paint['selected color']:
+            gamelib.draw_rectangle(x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1] , fill = color, outline='white', width=4 )
+        else:
+            gamelib.draw_rectangle(x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1] , fill = color, activeoutline='white' )
 
 def show_input_color(paint):
     '''Shows the input color option in the interface'''
@@ -60,9 +60,11 @@ def show_paint(paint):
     gamelib.draw_text('AlgoPaint', WIDTH_TEXT_TITLE, HEIGHT_TEXT_TITLE, bold=True, fill = 'black')    
     # elements of UI
     show_shortcut_colors(paint)
+    '''
     show_input_color(paint)
     show_pixels(paint)   
     show_save_load_image_buttons(paint)
     show_bucket(paint)
     show_undo_redo_buttons(paint)
+    '''
     gamelib.draw_end()
