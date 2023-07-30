@@ -231,7 +231,7 @@ def redo_last_action(paint):
 def change_pixel_color(paint, x, y):
     for pixel, pixel_data in paint['pixels'].items():
         x1, y1, x2, y2 = pixel_data['pos']
-        if x1 < x < x2 and y1 < y < y2:
+        if x1 < x <= x2 and y1 < y <= y2:
             if paint['bucket']:
                 current_color = pixel_data['color']
                 paint['done actions'].push(paint_around(
@@ -260,6 +260,54 @@ def save_png_clicked(x, y):
 def upload_ppm_clicked(x, y):
     return LOAD_PPM_BUTTON[0] < x < LOAD_PPM_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]
 
+def activate_bucket(paint):
+    if paint['selected color'] != '':
+        # to activate the bucket you must first have a selected color
+        paint['bucket'] = True
+def activate_eraser(paint):
+    paint['eraser'] = True
+    paint['selected color'] = DEFAULT_PIXEL_COLOR
+    paint['bucket'] = paint['entered color selected'] = False
+
+def select_custom_color(paint):
+    color = gamelib.input(
+        'Enter a color in hexadecimal code (#RRGGBB)')
+    if color == None:
+        return
+    if not validate_color(color):
+        gamelib.say(
+            'Invalid color, you should enter something like this: #00ff23. Do not forget to include "#" at the beginning')
+    else:
+        paint['entered color'] = paint['selected color'] = color
+        paint['entered color selected'] = True
+        paint['bucket'] = paint['eraser'] = False
+
+def change_color_to_custom(paint):
+    paint['entered color selected'] = True
+    paint['selected color'] = paint['entered color']
+    paint['bucket'] = paint['eraser'] = False
+
+def handle_tool_clicked(paint, x):
+    if UNDO[0] < x < UNDO[1]:
+        undo_last_action(paint)
+    elif REDO[0] < x < REDO[1]:
+        redo_last_action(paint)
+    elif BUCKET[0] < x < BUCKET[1]:
+        activate_bucket(paint)
+        paint['undone actions'].clear()  # if bucket is clicked, the redo stack is cleared
+    elif ERASER[0] < x < ERASER[1]:
+        activate_eraser(paint)
+        paint['undone actions'].clear()  # if a eraser is clicked, the redo stack is cleared
+    elif PIXELED[0] < x < PIXELED[1]:
+        paint['pixeled'] = not paint['pixeled']
+    elif INPUT_COLORS[0] < x < INPUT_COLORS[1]:
+        select_custom_color(paint)
+        paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
+    elif INPUT_COLOR[0] < x < INPUT_COLOR[1]:
+        change_color_to_custom(paint)
+        paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
+
+
 def main():
 
     gamelib.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -276,41 +324,7 @@ def main():
             elif pixel_clicked(x, y) and paint['selected color'] != '':
                 change_pixel_color(paint, x, y)         
             elif tool_bar_clicked(x, y):
-                if UNDO[0] < x < UNDO[1]:
-                    undo_last_action(paint)
-                elif REDO[0] < x < REDO[1]:
-                    redo_last_action(paint)
-                elif BUCKET[0] < x < BUCKET[1]:
-                    if paint['selected color'] != '':
-                        # to activate the bucket you must first have a selected color
-                        paint['bucket'] = True
-                    paint['undone actions'].clear()  # if bucket is clicked, the redo stack is cleared
-                elif ERASER[0] < x < ERASER[1]:
-                    paint['eraser'] = True
-                    paint['selected color'] = DEFAULT_PIXEL_COLOR
-                    paint['bucket'] = paint['entered color selected'] = False
-                    paint['undone actions'].clear()  # if a eraser is clicked, the redo stack is cleared
-                elif PIXELED[0] < x < PIXELED[1]:
-                    paint['pixeled'] = not paint['pixeled']
-                elif INPUT_COLORS[0] < x < INPUT_COLORS[1]:
-                    color = gamelib.input(
-                        'Enter a color in hexadecimal code (#RRGGBB)')
-                    if color == None:
-                        continue
-                    if not validate_color(color):
-                        gamelib.say(
-                            'Invalid color, you should enter something like this: #00ff23')
-                    else:
-                        paint['entered color'] = paint['selected color'] = color
-                        paint['entered color selected'] = True
-                        paint['bucket'] = paint['eraser'] = False
-                    paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
-                elif INPUT_COLOR[0] < x < INPUT_COLOR[1]:
-                    paint['entered color selected'] = True
-                    paint['selected color'] = paint['entered color']
-                    paint['bucket'] = paint['eraser'] = False
-                    paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
-
+                handle_tool_clicked(paint, x)
             elif upload_ppm_clicked(x, y):
                 load_as_ppm(paint)
                 paint['undone actions'].clear()
