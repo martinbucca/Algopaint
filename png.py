@@ -44,7 +44,7 @@ PNG_COMPRESSION = 0  # zlib/deflate
 PNG_FILTER = 0  # basic filter (none)
 PNG_INTERLACED = 0  # without interlacing
 PNG_FILTER_TYPE = 0  # whitout filter
-PNG_IMAGE_SIZE = 50 
+PNG_IMAGE_SIZE = 50
 
 
 def _generate_chunk(type, data):
@@ -55,14 +55,14 @@ def _generate_chunk(type, data):
 
 def _generate_ihdr(width, heigth):
     data = struct.pack("!IIBBBBB",
-        width,
-        heigth,
-        PNG_BITS_DEPTH,
-        PNG_COLOR_TYPE,
-        PNG_COMPRESSION,
-        PNG_FILTER,
-        PNG_INTERLACED
-    )
+                       width,
+                       heigth,
+                       PNG_BITS_DEPTH,
+                       PNG_COLOR_TYPE,
+                       PNG_COMPRESSION,
+                       PNG_FILTER,
+                       PNG_INTERLACED
+                       )
     return _generate_chunk(b"IHDR", data)
 
 
@@ -83,6 +83,7 @@ def _generate_idat(matrix):
 def _generate_iend():
     return _generate_chunk(b"IEND", b"")
 
+
 def write(path, palette, image):
     """
     write a file in indexed PNG format.
@@ -93,7 +94,8 @@ def write(path, palette, image):
         image: a matrix (list of rows) of integers; each number represents a pixel of the image, 
         and must be a valid index of the `palette`.
     """
-    assert len(set(len(row) for row in image)) == 1, 'all rows must have the same length'
+    assert len(set(len(row) for row in image)
+               ) == 1, 'all rows must have the same length'
 
     ihdr = _generate_ihdr(len(image[0]), len(image))
     plte = _generate_plte(palette)
@@ -107,31 +109,3 @@ def write(path, palette, image):
         output_file.write(idat)
         output_file.write(iend)
 
-palette = [
-    (0, 0, 0),
-    (255, 0, 0),
-    (0, 0, 255),
-    (0, 255, 0)
-]
-
-image = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
-    [0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
-    [0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0],
-    [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0],
-    [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-]
-
-
-write('file.png', palette, image)

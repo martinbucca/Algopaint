@@ -16,6 +16,7 @@ import signal
 import os
 import sys
 
+
 class _TkWindow(tk.Tk):
     instance = None
     initialized = threading.Event()
@@ -93,7 +94,8 @@ class _TkWindow(tk.Tk):
     def draw_text(self, text, x, y, font, size, bold, italic, kwargs):
         options = {'fill': 'white'}
         options.update(kwargs)
-        self.canvas.create_text(x, y, text=text, font=self.get_font(font, size, bold, italic), **options)
+        self.canvas.create_text(x, y, text=text, font=self.get_font(
+            font, size, bold, italic), **options)
 
     def get_font(self, family, size, bold, italic):
         weight = 'normal'
@@ -104,7 +106,8 @@ class _TkWindow(tk.Tk):
             slant = 'italic'
         name = f'font-{family}-{size}-{weight}-{slant}'
         if name not in self.assets:
-            self.assets[name] = Font(family=family, size=size, weight=weight, slant=slant)
+            self.assets[name] = Font(
+                family=family, size=size, weight=weight, slant=slant)
         return self.assets[name]
 
     def get_image(self, path):
@@ -123,6 +126,7 @@ class _TkWindow(tk.Tk):
     def with_window(self, func, args):
         func(self, *args)
 
+
 def check_image_format(path):
     "Produce a warning message if the image format is not supported"
     ext = path[-4:].lower()
@@ -131,12 +135,14 @@ def check_image_format(path):
         print(f"{path}: Warning: image format {ext} is not supported and may not work properly on some platforms (Windows/Mac/Linux).")
         print(f"Please use one of: {supported}.")
 
+
 def check_audio_format(path):
     "Produce a warning message if the audio format is not supported"
     ext = path[-4:].lower()
     if ext != ".wav":
         print(f"{path}: Warning: audio format {ext} is not supported and may not work properly on some platforms (Windows/Mac/Linux).")
         print(f"Please use WAV.")
+
 
 def _audio_init():
     # shamelessly stolen from https://github.com/TaylorSMarks/playsound
@@ -147,7 +153,7 @@ def _audio_init():
     def _playsoundWin(sound):
         from ctypes import c_buffer, windll
         from random import random
-        from sys    import getfilesystemencoding
+        from sys import getfilesystemencoding
 
         def winCommand(*command):
             buf = c_buffer(255)
@@ -169,14 +175,14 @@ def _audio_init():
         winCommand('play', alias, 'from 0 to', durationInMS.decode())
 
     def _playsoundOSX(sound):
-        from AppKit     import NSSound
+        from AppKit import NSSound
         from Foundation import NSURL
 
         if '://' not in sound:
             if not sound.startswith('/'):
                 sound = os.getcwd() + '/' + sound
             sound = 'file://' + sound
-        url   = NSURL.URLWithString_(sound)
+        url = NSURL.URLWithString_(sound)
         nssound = NSSound.alloc().initWithContentsOfURL_byReference_(url, True)
         if not nssound:
             raise IOError('Unable to load sound named: ' + sound)
@@ -195,7 +201,8 @@ def _audio_init():
         if sound.startswith(('http://', 'https://')):
             playbin.props.uri = sound
         else:
-            playbin.props.uri = 'file://' + pathname2url(os.path.abspath(sound))
+            playbin.props.uri = 'file://' + \
+                pathname2url(os.path.abspath(sound))
 
         set_result = playbin.set_state(Gst.State.PLAYING)
         if set_result != Gst.StateChangeReturn.ASYNC:
@@ -204,6 +211,7 @@ def _audio_init():
 
         bus = playbin.get_bus()
         bus.add_signal_watch()
+
         def on_message(bus, message):
             if message.type in (Gst.MessageType.EOS, Gst.MessageType.ERROR):
                 playbin.set_state(Gst.State.NULL)
@@ -235,6 +243,7 @@ def _audio_init():
             _playsoundNix(sound)
 
     return play_sound
+
 
 class _GameThread(threading.Thread):
     instance = None
@@ -411,7 +420,8 @@ class _GameThread(threading.Thread):
             gamelib.draw_text('Hello world!', 10, 10, fill='red', anchor='nw')
             ```
         """
-        self.send_command_to_tk('draw_text', text, x, y, font, size, bold, italic, options)
+        self.send_command_to_tk('draw_text', text, x, y,
+                                font, size, bold, italic, options)
 
     def draw_arc(self, x1, y1, x2, y2, **options):
         """
@@ -566,6 +576,7 @@ class _GameThread(threading.Thread):
         _GameThread._last_loop_time = time.time()
         return self.is_alive()
 
+
 _GameThread.instance = _GameThread()
 
 wait = _GameThread.instance.wait
@@ -588,12 +599,14 @@ is_alive = _GameThread.instance.is_alive
 loop = _GameThread.instance.loop
 play_sound = _audio_init()
 
+
 def _sigint_handler(sig, frame):
     w = _TkWindow.instance
     if w:
         w.close()
     else:
         raise KeyboardInterrupt()
+
 
 def init(game_main, args=None):
     """
@@ -621,9 +634,11 @@ def init(game_main, args=None):
         _TkWindow.instance = None
         _GameThread.instance.join(1)
         if _GameThread.instance.is_alive():
-            print('Killing unresponsive game thread. Make sure to call get_events() or wait() periodically.')
+            print(
+                'Killing unresponsive game thread. Make sure to call get_events() or wait() periodically.')
             os._exit(1)
         os._exit(0)
+
 
 class EventType(Enum):
     "An enumeration of the different types of `Event`s supported by gamelib."
@@ -638,6 +653,7 @@ class EventType(Enum):
     "The user pressed a mouse button."
     ButtonRelease = 'ButtonRelease'
     "The user released a mouse button."
+
 
 class Event:
     """
@@ -663,13 +679,17 @@ class Event:
         self.tkevent = tkevent
 
     def __getattr__(self, k):
-        if k == 'type': return EventType[self.tkevent.type.name]
-        if k == 'key': return self.tkevent.keysym
-        if k == 'mouse_button': return self.tkevent.num
+        if k == 'type':
+            return EventType[self.tkevent.type.name]
+        if k == 'key':
+            return self.tkevent.keysym
+        if k == 'mouse_button':
+            return self.tkevent.num
         return getattr(self.tkevent, k)
 
     def __repr__(self):
         return repr(self.tkevent)
+
 
 if __name__ == '__main__':
     def interactive_main(_locals):
