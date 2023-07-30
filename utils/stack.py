@@ -1,4 +1,3 @@
-# Stack implementation
 class _Node:
     def __init__(self, element, next=None):
         self.element = element
