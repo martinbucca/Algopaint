@@ -1,6 +1,6 @@
 from png import PNG_IMAGE_SIZE, write
+import re
 from stack import Stack
-import string
 import gamelib    
 from constants import *
 from ui import show_paint
@@ -10,10 +10,15 @@ from ui import show_paint
 
 def calculate_pixel_position(i, j):
     '''Calculates the position of a pixel in the interface, centered.'''
-    x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
-    y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
-    x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
-    y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
+    x1 = PIXEL_ZONE[0] + PIXEL_POSITION * i
+    y1 = PIXEL_ZONE[1] + PIXEL_POSITION * j
+    x2 = x1 + PIXEL_POSITION
+    y2 = y1 + PIXEL_POSITION
+
+    #x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
+    #y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
+    #x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
+    #y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
     return x1, y1, x2, y2
 
 def new_paint():
@@ -122,10 +127,7 @@ def save_as_png(paint):
 
 def validate_color(color):
     '''Given a string, validates that it is a hexadecimal color.'''
-    for char in color[1:]:
-        if char not in string.hexdigits:
-            return False
-    return True
+    return bool(re.match(r'^#[0-9a-fA-F]{6}$', color))
 
 def paint_around(pixel, paint, color):
     painted_pixels = ['BUCKET', []] # me guardo los pixeles pintados, el color anterior y el color al que fue pintado
@@ -150,7 +152,26 @@ def _paint_around(pixel, paint, color, painted_pixels): #pixel = j,i
         _paint_around(f'{int(pixel.split(",")[0]) - 1},{int(pixel.split(",")[1])}', paint, color, painted_pixels) #el de arriba 
         _paint_around(f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) + 1}', paint, color, painted_pixels) #el de la derecha
         _paint_around(f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) - 1}', paint, color, painted_pixels) #el de la izquierda
-            
+        
+def shortcut_color_clicked(x, y):
+    '''Returns True if the shortcut color was clicked.'''
+    return HEIGHT_COLOR_BAR[0] <= y <= HEIGHT_COLOR_BAR[1] and WIDTH_COLOR_BAR[0] <= x <= WIDTH_COLOR_BAR[1]
+
+def clicked_color(x_click):
+    '''Returns the color that was clicked. If no color was clicked, returns None.'''
+    for i, color in enumerate(MAIN_COLORS):
+        distance_to_first_color_x1 = (WIDTH_COLOR_BOX + SEPARATION_BETWEEN_COLORS) * i
+        x1 = X1_FIRST_COLOR + distance_to_first_color_x1
+        x2 = X1_FIRST_COLOR + WIDTH_COLOR_BOX + distance_to_first_color_x1
+        if x1 <= x_click <= x2:
+            return color
+    return None     
+
+
+def pixel_clicked(x, y):
+    '''Returns True if a pixel was clicked.'''
+    return PIXEL_ZONE[0] <= x <= PIXEL_ZONE[2] and PIXEL_ZONE[1] <= y <= PIXEL_ZONE[3]
+
 
 def main():
     
@@ -167,20 +188,19 @@ def main():
         if not ev:
             break
         
-        '''
+        
         if ev.type == gamelib.EventType.ButtonPress and ev.mouse_button == 1: 
             x, y = ev.x, ev.y   
-                
-            for i in range(len(MAIN_COLORS)):
-                
-                if COLOR_POSITION * i + WIDTH_COLOR[0] <= x <= COLOR_POSITION * i + WIDTH_COLOR[1] and HEIGHT_COLOR_BAR[0] <= y <= HEIGHT_COLOR_BAR[1]:
-                    while not undone_actions.empty(): #vacio la pila, si se toca un color se pierde la posibilidad de hacer redo hasta que se haga undo
-                        undone_actions.pop() 
-                    paint['selected color'] = MAIN_COLORS[i]
-                    paint['bucket'] = False # si el BUCKET esta activado y se toca un color despues, lo desactiva
-                    
-                
+            if shortcut_color_clicked(x, y):
+                color = clicked_color(x)
+                if color:
+                    undone_actions.clear() # if a color is clicked, the redo stack is cleared
+                    paint['selected color'] = color
+                    paint['bucket'] = paint['eraser'] = False # if bucket or eraser is active and a color is clicked, it is deactivated
 
+
+            '''
+            elif pixel_clicked(x, y):
             for pixel in paint['pixels']:
                 
                 x1, y1, x2, y2 = paint['pixels'][pixel]['pos'][0], paint['pixels'][pixel]['pos'][1], paint['pixels'][pixel]['pos'][2], paint['pixels'][pixel]['pos'][3]
@@ -195,7 +215,7 @@ def main():
                         paint['pixels'][pixel]['color'] = paint['selected color'] #se pinta el pixel del color seleccionado si es que se selecciono alguno.
                         post_color = paint['pixels'][pixel]['color']
                         done_actions.push((pos_pixel, prev_color, post_color)) #apilo la posicion del pixel el color antes de ser pintado y despues
-
+            
             if INPUT_COLORS[0] <= x <= INPUT_COLORS[2] and INPUT_COLORS[1] <= y <= INPUT_COLORS[3]:
                 while not undone_actions.empty():
                     undone_actions.pop()
@@ -257,11 +277,13 @@ def main():
                     undone_actions.pop()
                 if paint['selected color'] != '':
                     paint['bucket'] = True #PARA ACTIVAR EL BUCKET PRIMERO TENES QUE TENER UN COLOR SELECCIONADO
-         
-        ''' 
+         '''
+        
 
 
 gamelib.init(main)
+
+
 
 
 

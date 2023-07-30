@@ -27,16 +27,14 @@ def show_pixels(paint):
 
 def show_shortcut_colors(paint):
     '''Shows the shortcut colors in the interface'''
-    i = 0
-    for color in MAIN_COLORS:
+    for i, color in enumerate(MAIN_COLORS):
         distance_to_first_color_x1 = (WIDTH_COLOR_BOX + SEPARATION_BETWEEN_COLORS) * i
         x1 = X1_FIRST_COLOR + distance_to_first_color_x1
         x2 = X1_FIRST_COLOR + WIDTH_COLOR_BOX + distance_to_first_color_x1
         if color == paint['selected color']:
-            gamelib.draw_rectangle(x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1] , fill = color, outline='white', width=4 )
+            gamelib.draw_rectangle(x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1] , fill = color, outline='black', width=4 )
         else:
-            gamelib.draw_rectangle(x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1] , fill = color, activeoutline='white', activewidth=2)
-        i += 1
+            gamelib.draw_rectangle(x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1] , fill = color, activeoutline='black', activewidth=2)
 
 
 

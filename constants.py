@@ -6,11 +6,13 @@ BACKGROUND_COLOR = '#898685'
 DEFAULT_PIXEL_COLOR = '#ffffff'
 WIDTH_CENTERED_PIXEL = (240, 260) # the width of a 20 sized pixel in the center
 HEIGHT_CENTERED_PIXEL = (370, 390) # the height of a 20 sized pixel in the center
+PIXEL_ZONE = (40, 170, 440, 570) # the zone where the pixels are drawn
 PIXEL_POSITION = 20
 POSITION_RELATIVE_TO_SIZE = 10
 # COLORS SHORTCUT BAR
 MAIN_COLORS = ('#ff0000', '#ff4500', '#a0522d', '#00ff00', '#32cd32', '#ffd700', '#0000ff', '#1e90ff', '#ff69b4', '#8a2be2')
 HEIGHT_COLOR_BAR = (80, 115)
+WIDTH_COLOR_BAR = (40, 439.5)
 X1_FIRST_COLOR = 40
 WIDTH_COLOR_BOX = 35
 SEPARATION_BETWEEN_COLORS = 5.5

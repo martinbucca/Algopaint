@@ -16,3 +16,6 @@ class Stack:
         return self.top.element
     def empty(self):
         return self.top is None
+    def clear(self):
+        while not self.empty():
+            self.pop()
