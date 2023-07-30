@@ -1,4 +1,4 @@
-from png import write
+from png import PNG_IMAGE_SIZE, write
 from stack import Stack
 import string
 import gamelib    
@@ -8,20 +8,37 @@ from ui import show_paint
 
 
 
-def new_paint(width, height):
-    '''inicializa el estado del programa con una imagen vacía de ancho x alto pixels'''
-    '''initialize the state of the program with an empty image of width x height pixels'''
-    empty_image = {'header': 'Empty image','width': width, 'height': height, 'intensity': 255,'selected color' : '','entered color': '#ffffef' ,'bucket':False ,'pixels': {}}
-    for j in range (height):
-        for i in range(width):
-            empty_image['pixels'][f'{j},{i}'] = {}
-            x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * width  + PIXEL_POSITION * i
-            y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * height + PIXEL_POSITION * j
-            x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * width + PIXEL_POSITION * i
-            y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * height + PIXEL_POSITION * j
-            empty_image['pixels'][f'{j},{i}']['pos'] = (x1, y1, x2, y2)
-            empty_image['pixels'][f'{j},{i}']['color'] = '#' + f'{255:02x}' * 3
+def calculate_pixel_position(i, j):
+    '''Calculates the position of a pixel in the interface, centered.'''
+    x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
+    y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
+    x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
+    y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
+    return x1, y1, x2, y2
+
+def new_paint():
+    '''Creates a new paint with the given width and height'''
+    empty_image = {
+        'header': 'Empty image',
+        'width': WIDTH_INITIAL_IMAGE,
+        'height': HEIGHT_INITIAL_IMAGE,
+        'intensity': 255,
+        'selected color': '',
+        'entered color': '#ffffef',
+        'bucket': False,
+        'eraser': False,
+        'pixels': {
+            f'{j},{i}': {
+                'pos': calculate_pixel_position(i, j),
+                'color': DEFAULT_PIXEL_COLOR,
+            }
+            for j in range(HEIGHT_INITIAL_IMAGE)
+            for i in range(WIDTH_INITIAL_IMAGE)
+        }
+    }
     return empty_image
+
+
 
 
 def save_as_ppm(paint):
@@ -139,7 +156,7 @@ def main():
     
     gamelib.title("AlgoPaint")
     gamelib.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
-    paint = new_paint(WIDTH_INITIAL_IMAGE, HEIGHT_INITIAL_IMAGE)
+    paint = new_paint()
     done_actions = Stack()
     undone_actions = Stack()
     while gamelib.is_alive():

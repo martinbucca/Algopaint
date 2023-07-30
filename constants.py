@@ -3,6 +3,7 @@ WINDOW_HEIGHT = 600
 WIDTH_INITIAL_IMAGE = 20
 HEIGHT_INITIAL_IMAGE = 20
 BACKGROUND_COLOR = '#898685'
+DEFAULT_PIXEL_COLOR = '#ffffff'
 WIDTH_CENTERED_PIXEL = (240, 260) # the width of a 20 sized pixel in the center
 HEIGHT_CENTERED_PIXEL = (370, 390) # the height of a 20 sized pixel in the center
 PIXEL_POSITION = 20
