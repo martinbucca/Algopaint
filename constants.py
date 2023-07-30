@@ -1,14 +1,13 @@
+# WINDOW SETTINGS
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 600
-WIDTH_INITIAL_IMAGE = 20
-HEIGHT_INITIAL_IMAGE = 20
 BACKGROUND_COLOR = '#898685'
+# PIXELS SETTINGS
 DEFAULT_PIXEL_COLOR = '#ffffff'
-WIDTH_CENTERED_PIXEL = (240, 260) # the width of a 20 sized pixel in the center
-HEIGHT_CENTERED_PIXEL = (370, 390) # the height of a 20 sized pixel in the center
-PIXEL_ZONE = (40, 170, 440, 570) # the zone where the pixels are drawn
-PIXEL_POSITION = 20
-POSITION_RELATIVE_TO_SIZE = 10
+WIDTH_INITIAL_IMAGE = 20 # the width of the initial image (n)
+HEIGHT_INITIAL_IMAGE = 20 # the height of the initial image (m)
+PIXEL_ZONE = (40, 170) # the zone where the pixels are drawn (x1, y1)
+PIXEL_SIZE = 20 # the size of the pixels
 # COLORS SHORTCUT BAR
 MAIN_COLORS = ('#ff0000', '#ff4500', '#a0522d', '#00ff00', '#32cd32', '#ffd700', '#0000ff', '#1e90ff', '#ff69b4', '#8a2be2')
 HEIGHT_COLOR_BAR = (80, 115)

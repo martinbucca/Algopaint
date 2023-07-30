@@ -8,17 +8,12 @@ from ui import show_paint
 
 
 
-def calculate_pixel_position(i, j):
+def calculate_PIXEL_SIZE(i, j):
     '''Calculates the position of a pixel in the interface, centered.'''
-    x1 = PIXEL_ZONE[0] + PIXEL_POSITION * i
-    y1 = PIXEL_ZONE[1] + PIXEL_POSITION * j
-    x2 = x1 + PIXEL_POSITION
-    y2 = y1 + PIXEL_POSITION
-
-    #x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
-    #y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
-    #x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * WIDTH_INITIAL_IMAGE + PIXEL_POSITION * i
-    #y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * HEIGHT_INITIAL_IMAGE + PIXEL_POSITION * j
+    x1 = PIXEL_ZONE[0] + PIXEL_SIZE * i
+    y1 = PIXEL_ZONE[1] + PIXEL_SIZE * j
+    x2 = x1 + PIXEL_SIZE
+    y2 = y1 + PIXEL_SIZE
     return x1, y1, x2, y2
 
 def new_paint():
@@ -34,7 +29,7 @@ def new_paint():
         'eraser': False,
         'pixels': {
             f'{j},{i}': {
-                'pos': calculate_pixel_position(i, j),
+                'pos': calculate_PIXEL_SIZE(i, j),
                 'color': DEFAULT_PIXEL_COLOR,
             }
             for j in range(HEIGHT_INITIAL_IMAGE)
@@ -64,6 +59,8 @@ def save_as_ppm(paint):
             if int(pixel.split(',')[1]) + 1 == paint['width']: # last of row
                 ppm.write('\n') # to save it in the correct format
     
+
+'''    
 def load_as_ppm(paint):
     '''Opens an image in ppm format in the interface'''
     name = gamelib.input('Open PPM:')
@@ -85,10 +82,10 @@ def load_as_ppm(paint):
         c = 0 
         for j in range(paint['height']):
             for i in range(0, len(colors)//paint['height'], 3):
-                x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * paint['width']  + PIXEL_POSITION * i//3
-                y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * paint['height'] + PIXEL_POSITION * j
-                x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * paint['width'] + PIXEL_POSITION * i//3
-                y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * paint['height'] + PIXEL_POSITION * j
+                x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * paint['width']  + PIXEL_SIZE * i//3
+                y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * paint['height'] + PIXEL_SIZE * j
+                x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * paint['width'] + PIXEL_SIZE * i//3
+                y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * paint['height'] + PIXEL_SIZE * j
                 paint['pixels'][f'{j},{i//3}']['pos'] = (x1, y1, x2, y2)
                 r, g, b = int(colors[c]), int(colors[c + 1]), int(colors[c + 2])
                 paint['pixels'][f'{j},{i//3}']['color'] = '#' + f'{r:02x}' + f'{g:02x}' + f'{b:02x}'
@@ -98,7 +95,7 @@ def load_as_ppm(paint):
         gamelib.say(f'Error. The file {name} does not exist or can not be opened.')
     except ValueError:
         gamelib.say('Sorry. Something went wrong')
-
+'''
 def save_as_png(paint):
     '''Save an image in png format.'''
     name = gamelib.input('Save as:')
@@ -170,7 +167,9 @@ def clicked_color(x_click):
 
 def pixel_clicked(x, y):
     '''Returns True if a pixel was clicked.'''
-    return PIXEL_ZONE[0] <= x <= PIXEL_ZONE[2] and PIXEL_ZONE[1] <= y <= PIXEL_ZONE[3]
+    x2 = PIXEL_ZONE[0] + PIXEL_SIZE * WIDTH_INITIAL_IMAGE
+    y2 = PIXEL_ZONE[1] + PIXEL_SIZE * HEIGHT_INITIAL_IMAGE
+    return PIXEL_ZONE[0] <= x <= x2 and PIXEL_ZONE[1] <= y <= y2
 
 
 def main():
