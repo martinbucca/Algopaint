@@ -59,10 +59,8 @@ def show_undo_redo_buttons(paint):
 
 def show_bucket(paint):
     '''Shows the bucket in the interface'''
-    fill_color = paint['selected color'] if paint['bucket'] else 'white'
-    outline_color = 'white' if paint['bucket'] else 'black'
     bucket_width = 4 if paint['bucket'] else 1
-    gamelib.draw_rectangle(BUCKET[0], HEIGHT_TOOL_BAR[0], BUCKET[1], HEIGHT_TOOL_BAR[1], fill=fill_color, outline=outline_color, width=bucket_width, activeoutline='black', activewidth=3)
+    gamelib.draw_rectangle(BUCKET[0], HEIGHT_TOOL_BAR[0], BUCKET[1], HEIGHT_TOOL_BAR[1], outline='black', width=bucket_width, activeoutline='black', activewidth=3)
     gamelib.draw_image('assets/images/bucket.ppm', BUCKET[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
 
 def show_eraser(paint):
@@ -75,6 +73,7 @@ def show_eraser(paint):
 
 def show_input_color(paint):
     '''Shows the input color option in the interface'''
+    gamelib.draw_rectangle(INPUT_COLORS[0], HEIGHT_TOOL_BAR[0], INPUT_COLORS[1], HEIGHT_TOOL_BAR[1], outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('assets/images/palette.ppm', INPUT_COLORS[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
     if paint['entered color selected'] and paint['entered color'] != 'white':
         gamelib.draw_rectangle(INPUT_COLOR[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR[1], HEIGHT_TOOL_BAR[1],fill=paint['entered color'], outline = 'black', width=4)

@@ -223,11 +223,17 @@ def main():
                 elif REDO[0] < x < REDO[1]:
                     continue
                 elif BUCKET[0] < x < BUCKET[1]:
-                    continue
+                    if paint['selected color'] != '':
+                        paint['bucket'] = True #PARA ACTIVAR EL BUCKET PRIMERO TENES QUE TENER UN COLOR SELECCIONADO
+                    undone_actions.clear() # if bucket is clicked, the redo stack is cleared
+
+
                 elif ERASER[0] < x < ERASER[1]:
                     paint['eraser'] = True
                     paint['selected color'] = DEFAULT_PIXEL_COLOR
                     paint['bucket'] = paint['entered color selected'] = False
+                    undone_actions.clear() # if a eraser is clicked, the redo stack is cleared
+
                 elif INPUT_COLORS[0] < x < INPUT_COLORS[1]:
                     color = gamelib.input('Enter a color in hexadecimal code (#RRGGBB)')
                     if color == None:
