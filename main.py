@@ -133,9 +133,7 @@ def paint_around(pixel, paint, color):
     return painted_pixels
 
 def _paint_around(pixel, paint, color, painted_pixels): #pixel = j,i
-    '''Pinta un pixel si es del mismo color del color anterior al pixel que fue presionado.
-    Se llama a si misma recursivamente.
-    '''
+    '''Paints a pixel if it is the same color as the previous color of the pixel that was pressed.'''
     if int(pixel.split(',')[0]) < 0 or int(pixel.split(',')[0]) == paint['height'] or int(pixel.split(',')[1]) < 0 or int(pixel.split(',')[1]) == paint['width']:
         return
     if paint['pixels'][pixel]['color'] != color:
@@ -146,10 +144,10 @@ def _paint_around(pixel, paint, color, painted_pixels): #pixel = j,i
             paint['pixels'][pixel]['color'] = paint['selected color']
             painted_pixels[1].append((pixel, color, paint['selected color'])) # (pixel pintado, color anterior, color pintado)        
 
-        _paint_around(f'{int(pixel.split(",")[0]) + 1},{int(pixel.split(",")[1])}', paint, color, painted_pixels) #el de abajo
-        _paint_around(f'{int(pixel.split(",")[0]) - 1},{int(pixel.split(",")[1])}', paint, color, painted_pixels) #el de arriba 
-        _paint_around(f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) + 1}', paint, color, painted_pixels) #el de la derecha
-        _paint_around(f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) - 1}', paint, color, painted_pixels) #el de la izquierda
+        _paint_around(f'{int(pixel.split(",")[0]) + 1},{int(pixel.split(",")[1])}', paint, color, painted_pixels) # down
+        _paint_around(f'{int(pixel.split(",")[0]) - 1},{int(pixel.split(",")[1])}', paint, color, painted_pixels) # up
+        _paint_around(f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) + 1}', paint, color, painted_pixels) # rigth
+        _paint_around(f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) - 1}', paint, color, painted_pixels) # left
         
 def shortcut_color_clicked(x, y):
     '''Returns True if the shortcut color was clicked.'''
@@ -175,6 +173,19 @@ def pixel_clicked(x, y):
 def tool_bar_clicked(x, y):
     '''Returns True if the tool bar was clicked.'''
     return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= INPUT_COLOR[1]
+
+
+def undo_last_action(paint, done_actions, undone_actions):
+    if not done_actions.empty(): #si esta vacia no hay acciones que deshacer
+        last_action = done_actions.get_top()
+        if last_action[0] != 'bucket': #si el primer elemento es BUCKET, se deben cambiar los colores de varios pixeles
+            pixel_clicked = last_action[0]
+            paint['pixels'][pixel_clicked]['color'] = last_action[1] # change the color of the pixel that was clicked to the previous color
+            undone_actions.push(done_actions.pop())
+        else:
+            for pixel in done_actions.get_top()[1]:
+                paint['pixels'][pixel[0]]['color'] = pixel[1]
+            undone_actions.push(done_actions.pop())
 
 def main():
     
@@ -212,16 +223,17 @@ def main():
                             color = pixel_data['color']
                             done_actions.push(paint_around(pixel, paint, color))
                         else:
-                            pixel_data['color'] = paint['selected color']
-                            pos_pixel = pixel_data['pos']
                             prev_color = pixel_data['color']
+                            pixel_data['color'] = paint['selected color']
                             post_color = pixel_data['color']
-                            done_actions.push((pos_pixel, prev_color, post_color))
+                            done_actions.push((pixel, prev_color, post_color))
             elif tool_bar_clicked(x, y):
                 if UNDO[0] < x < UNDO[1]:
-                    continue
+                    undo_last_action(paint, done_actions, undone_actions)
                 elif REDO[0] < x < REDO[1]:
                     continue
+
+
                 elif BUCKET[0] < x < BUCKET[1]:
                     if paint['selected color'] != '':
                         paint['bucket'] = True #PARA ACTIVAR EL BUCKET PRIMERO TENES QUE TENER UN COLOR SELECCIONADO
@@ -287,28 +299,28 @@ def main():
 
             if UNDO[0] < x < UNDO[2] and UNDO[1] < y < UNDO[3]:
                 if not done_actions.empty(): #si esta vacia no hay acciones que deshacer
-                    if done_actions.top()[0] != 'bucket': #si el primer elemento es BUCKET, se deben cambiar los colores de varios pixeles
+                    if done_actions.get_top()[0] != 'bucket': #si el primer elemento es BUCKET, se deben cambiar los colores de varios pixeles
                         for pixel in paint['pixels']:
-                            if paint['pixels'][pixel]['pos'] == done_actions.top()[0]: 
-                                paint['pixels'][pixel]['color'] = done_actions.top()[1] #le cambio el color al ultimo estado de ese color que es el tope
+                            if paint['pixels'][pixel]['pos'] == done_actions.get_top()[0]: 
+                                paint['pixels'][pixel]['color'] = done_actions.get_top()[1] #le cambio el color al ultimo estado de ese color que es el tope
                                 undone_actions.push(done_actions.pop())
                                 break
                     else:
-                        for pixel in done_actions.top()[1]:
+                        for pixel in done_actions.get_top()[1]:
                             paint['pixels'][pixel[0]]['color'] = pixel[1]
                         undone_actions.push(done_actions.pop())
                     
 
             if REDO[0] < x < REDO[2] and REDO[1] < y < REDO[3]:
                 if not undone_actions.empty(): #si esta vacia no hay acciones que rehacer
-                    if undone_actions.top()[0] != 'bucket':
+                    if undone_actions.get_top()[0] != 'bucket':
                         for pixel in paint['pixels']:
-                            if paint['pixels'][pixel]['pos'] == undone_actions.top()[0]: 
-                                paint['pixels'][pixel]['color'] = undone_actions.top()[2] #le cambio el color al ultimo estado de ese color que es el tope
+                            if paint['pixels'][pixel]['pos'] == undone_actions.get_top()[0]: 
+                                paint['pixels'][pixel]['color'] = undone_actions.get_top()[2] #le cambio el color al ultimo estado de ese color que es el tope
                                 done_actions.push(undone_actions.pop())
                                 break
                     else:
-                        for pixel in undone_actions.top()[1]:
+                        for pixel in undone_actions.get_top()[1]:
                             paint['pixels'][pixel[0]]['color'] = pixel[2]
                         done_actions.push(undone_actions.pop())
                     

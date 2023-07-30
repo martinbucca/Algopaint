@@ -12,7 +12,7 @@ class Stack:
         popped_element = self.top.element
         self.top = self.top.next
         return popped_element
-    def top(self):          
+    def get_top(self):          
         return self.top.element
     def empty(self):
         return self.top is None
