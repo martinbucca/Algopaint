@@ -39,7 +39,7 @@ def tool_bar_clicked(x, y):
     Returns True if any tool of the tool bar in the window was clicked.
     False otherwise
     '''
-    return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= INPUT_COLOR[1]
+    return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= INPUT_COLOR_3[1]
 
 
 def shortcut_color_clicked(x, y):
@@ -93,12 +93,26 @@ def input_colors_clicked(x):
     '''
     return INPUT_COLORS[0] < x < INPUT_COLORS[1]
 
-def custom_color_clicked(x):
+def custom_color1_clicked(x):
     '''
     Returns True if the custom color button in the window was clicked.
     False otherwise
     '''
-    return INPUT_COLOR[0] < x < INPUT_COLOR[1]
+    return INPUT_COLOR_1[0] < x < INPUT_COLOR_1[1]
+
+def custom_color2_clicked(x):
+    '''
+    Returns True if the custom color button in the window was clicked.
+    False otherwise
+    '''
+    return INPUT_COLOR_2[0] < x < INPUT_COLOR_2[1]
+
+def custom_color3_clicked(x):
+    '''
+    Returns True if the custom color button in the window was clicked.
+    False otherwise
+    '''
+    return INPUT_COLOR_3[0] < x < INPUT_COLOR_3[1]
 
 def handle_tool_clicked(paint, x):
     '''
@@ -123,6 +137,12 @@ def handle_tool_clicked(paint, x):
     elif input_colors_clicked(x):
         logic.select_custom_color(paint)
         paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
-    elif custom_color_clicked(x):
-        logic.change_color_to_custom(paint)
+    elif custom_color1_clicked(x):
+        logic.change_color_to_custom(paint, 1)
         paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
+    elif custom_color2_clicked(x):
+        logic.change_color_to_custom(paint, 2)
+        paint['undone actions'].clear()
+    elif custom_color3_clicked(x):
+        logic.change_color_to_custom(paint, 3)
+        paint['undone actions'].clear()

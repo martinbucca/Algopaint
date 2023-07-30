@@ -26,8 +26,13 @@ def new_paint():
         'height': HEIGHT_INITIAL_IMAGE,
         'intensity': 255,
         'selected color': '',
-        'entered color': 'white',
-        'entered color selected': False,
+        'entered color 1': 'white',
+        'entered color 2': 'white',
+        'entered color 3': 'white',
+        'curr custom box': 0,
+        'entered color 1 selected': False,
+        'entered color 2 selected': False,
+        'entered color 3 selected': False,
         'bucket': False,
         'eraser': False,
         'pixeled': True,
@@ -241,7 +246,8 @@ def change_color_selected(paint, x):
     if color:
         paint['selected color'] = color
         # if bucket or eraser is active and a color is clicked, it is deactivated
-        paint['bucket'] = paint['eraser'] = paint['entered color selected'] = False
+        paint['entered color 1 selected'] = paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
+        paint['bucket'] = paint['eraser'] = False
         paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
 
 
@@ -252,7 +258,9 @@ def activate_bucket(paint):
 def activate_eraser(paint):
     paint['eraser'] = True
     paint['selected color'] = DEFAULT_PIXEL_COLOR
-    paint['bucket'] = paint['entered color selected'] = False
+    paint['bucket'] = False
+    paint['entered color 1 selected'] = paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
+
 
 def select_custom_color(paint):
     color = gamelib.input(
@@ -263,13 +271,38 @@ def select_custom_color(paint):
         gamelib.say(
             'Invalid color, you should enter something like this: #00ff23. Do not forget to include "#" at the beginning')
     else:
-        paint['entered color'] = paint['selected color'] = color
-        paint['entered color selected'] = True
+        if paint['curr custom box'] == 0:
+            paint['entered color 1 selected'] = True
+            paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
+            paint['selected color'] = paint['entered color 1'] = color
+            paint['curr custom box'] = 1
+        elif paint['curr custom box'] == 1:
+            paint['entered color 2 selected'] = True
+            paint['entered color 1 selected'] = paint['entered color 3 selected'] = False
+            paint['selected color'] = paint['entered color 2'] = color
+            paint['curr custom box'] = 2
+        elif paint['curr custom box'] == 2:
+            paint['entered color 3 selected'] = True
+            paint['entered color 1 selected'] = paint['entered color 2 selected'] = False
+            paint['selected color'] = paint['entered color 3'] = color
+            paint['curr custom box'] = 0
         paint['bucket'] = paint['eraser'] = False
 
-def change_color_to_custom(paint):
-    paint['entered color selected'] = True
-    paint['selected color'] = paint['entered color']
+
+def change_color_to_custom(paint, n):
+    if n == 1:
+        paint['entered color 1 selected'] = True
+        paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
+        paint['selected color'] = paint['entered color 1']
+    elif n == 2:
+        paint['entered color 2 selected'] = True
+        paint['entered color 1 selected'] = paint['entered color 3 selected'] = False
+
+        paint['selected color'] = paint['entered color 2']
+    elif n == 3:
+        paint['entered color 3 selected'] = True
+        paint['entered color 1 selected'] = paint['entered color 2 selected'] = False
+        paint['selected color'] = paint['entered color 3']
     paint['bucket'] = paint['eraser'] = False
 
 

@@ -59,6 +59,7 @@ def show_shortcut_colors(paint):
             WIDTH_COLOR_BOX + SEPARATION_BETWEEN_COLORS) * i
         x1 = X1_FIRST_COLOR + distance_to_first_color_x1
         x2 = X1_FIRST_COLOR + WIDTH_COLOR_BOX + distance_to_first_color_x1
+        print(x1, x2)
         if color == paint['selected color']:
             gamelib.draw_rectangle(
                 x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1], fill=color, outline='black', width=4)
@@ -87,7 +88,7 @@ def show_undo_redo_buttons(paint):
                            outline='black', activeoutline='black', activewidth=3)
     x_undo_image = UNDO[0] + 6
     x_redo_image = REDO[0] + 6
-    y_undo_image = y_redo_image = HEIGHT_TOOL_BAR[0] + 4
+    y_undo_image = y_redo_image = HEIGHT_TOOL_BAR[0] + 7
     gamelib.draw_image('icons/undo1.ppm', x_undo_image, y_undo_image)
     gamelib.draw_rectangle(REDO[0], HEIGHT_TOOL_BAR[0], REDO[1], HEIGHT_TOOL_BAR[1],
                            activeoutline='black', outline='black', activewidth=3)
@@ -102,7 +103,7 @@ def show_bucket(paint):
     gamelib.draw_rectangle(BUCKET[0], HEIGHT_TOOL_BAR[0], BUCKET[1], HEIGHT_TOOL_BAR[1],
                            outline='black', width=bucket_width, activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/bucket.ppm',
-                       BUCKET[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
+                       BUCKET[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
 
 
 def show_eraser(paint):
@@ -116,14 +117,14 @@ def show_eraser(paint):
         gamelib.draw_rectangle(ERASER[0], HEIGHT_TOOL_BAR[0], ERASER[1],
                                HEIGHT_TOOL_BAR[1], outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/eraser.ppm',
-                       ERASER[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
+                       ERASER[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
 
 
 def show_pixeled_option():
     gamelib.draw_rectangle(PIXELED[0], HEIGHT_TOOL_BAR[0], PIXELED[1],
                            HEIGHT_TOOL_BAR[1], outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/border.ppm',
-                       PIXELED[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
+                       PIXELED[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
 
 def show_trash():
     '''
@@ -132,7 +133,7 @@ def show_trash():
     gamelib.draw_rectangle(TRASH[0], HEIGHT_TOOL_BAR[0], TRASH[1], HEIGHT_TOOL_BAR[1],
                            outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/trash.ppm',
-                       TRASH[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
+                       TRASH[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
 
 def show_input_color(paint):
     '''
@@ -141,13 +142,25 @@ def show_input_color(paint):
     gamelib.draw_rectangle(INPUT_COLORS[0], HEIGHT_TOOL_BAR[0], INPUT_COLORS[1],
                            HEIGHT_TOOL_BAR[1], outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/palette.ppm',
-                       INPUT_COLORS[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
-    if paint['entered color selected'] and paint['entered color'] != 'white':
-        gamelib.draw_rectangle(INPUT_COLOR[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color'], outline='black', width=4)
+                       INPUT_COLORS[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
+    if paint['entered color 1 selected'] and paint['entered color 1'] != 'white':
+        gamelib.draw_rectangle(INPUT_COLOR_1[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR_1[1],
+                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 1'], outline='black', width=4)
     else:
-        gamelib.draw_rectangle(INPUT_COLOR[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color'], outline='black')
+        gamelib.draw_rectangle(INPUT_COLOR_1[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR_1[1],
+                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 1'], outline='black')
+    if paint['entered color 2 selected'] and paint['entered color 2'] != 'white':
+        gamelib.draw_rectangle(INPUT_COLOR_2[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR_2[1],
+                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 2'], outline='black', width=4)
+    else:
+        gamelib.draw_rectangle(INPUT_COLOR_2[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR_2[1],
+                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 2'], outline='black')
+    if paint['entered color 3 selected'] and paint['entered color 3'] != 'white':
+        gamelib.draw_rectangle(INPUT_COLOR_3[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR_3[1],
+                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 3'], outline='black', width=4)
+    else:
+        gamelib.draw_rectangle(INPUT_COLOR_3[0], HEIGHT_TOOL_BAR[0], INPUT_COLOR_3[1],
+                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 3'], outline='black')
 
 
 def show_paint(paint):

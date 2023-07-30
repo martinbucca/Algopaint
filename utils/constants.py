@@ -9,7 +9,7 @@ HEIGHT_INITIAL_IMAGE = 20  # the height of the initial image (m)
 PIXEL_ZONE = (40, 170)  # the zone where the pixels are drawn (x1, y1)
 PIXEL_SIZE = 20  # the size of the pixels
 # COLORS SHORTCUT BAR
-MAIN_COLORS = ('#000000', '#ff4500', '#a0522d', '#00ff00', '#32cd32',
+MAIN_COLORS = ('#000000', '#ff0000', '#FF8000', '#00ff00', '#32cd32',
                '#ffd700', '#0000ff', '#1e90ff', '#ff69b4', '#8a2be2')
 HEIGHT_COLOR_BAR = (80, 115)
 WIDTH_COLOR_BAR = (40, 439.5)
@@ -31,12 +31,14 @@ HEIGHT_TITLE = 35
 WIDTH_TEXT_TITLE = 250
 HEIGHT_TEXT_TITLE = 18
 # UI TOOLBAR
-HEIGHT_TOOL_BAR = (125, 155)
+HEIGHT_TOOL_BAR = (125, 160)
 UNDO = (40, 75)
-REDO = (80, 115)
-BUCKET = (120, 155)
-ERASER = (160, 195)
-PIXELED = (200, 235)
-TRASH = (240, 275)
-INPUT_COLORS = (280, 315)
-INPUT_COLOR = (320, 355)
+REDO = (80.5, 115.5)
+BUCKET = (121, 156)
+ERASER = (161.5, 196.5)
+PIXELED = (202, 237)
+TRASH = (242.5, 277.5)
+INPUT_COLORS = (283, 318)
+INPUT_COLOR_1 = (323.5, 358.5)
+INPUT_COLOR_2 =  (364.0, 399.0)
+INPUT_COLOR_3 = (404.5, 439.5)
