@@ -273,3 +273,6 @@ def change_color_to_custom(paint):
     paint['bucket'] = paint['eraser'] = False
 
 
+def clear_paint(paint):
+    for pixel in paint['pixels']:
+        paint['pixels'][pixel]['color'] = DEFAULT_PIXEL_COLOR

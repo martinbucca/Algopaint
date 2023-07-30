@@ -74,6 +74,12 @@ def eraser_clicked(x):
     False otherwise
     '''
     return ERASER[0] < x < ERASER[1]
+def trash_clicked(x):
+    '''
+    Returns True if the trash button in the window was clicked.
+    False otherwise
+    '''
+    return TRASH[0] < x < TRASH[1]
 def pixeled_clicked(x):
     '''
     Returns True if the pixeled/unpixeled button in the window was clicked.
@@ -109,6 +115,9 @@ def handle_tool_clicked(paint, x):
     elif eraser_clicked(x):
         logic.activate_eraser(paint)
         paint['undone actions'].clear()  # if a eraser is clicked, the redo stack is cleared
+    elif trash_clicked(x):
+        logic.clear_paint(paint)
+        paint['undone actions'].clear()  # if trash is clicked, the redo stack is cleared
     elif pixeled_clicked(x):
         paint['pixeled'] = not paint['pixeled']
     elif input_colors_clicked(x):

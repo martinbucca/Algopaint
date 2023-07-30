@@ -75,6 +75,7 @@ def show_tool_bar(paint):
     show_bucket(paint)
     show_eraser(paint)
     show_pixeled_option()
+    show_trash()
     show_input_color(paint)
 
 
@@ -124,6 +125,14 @@ def show_pixeled_option():
     gamelib.draw_image('icons/border.ppm',
                        PIXELED[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
 
+def show_trash():
+    '''
+    Shows the trash button in the interface
+    '''
+    gamelib.draw_rectangle(TRASH[0], HEIGHT_TOOL_BAR[0], TRASH[1], HEIGHT_TOOL_BAR[1],
+                           outline='black', activeoutline='black', activewidth=3)
+    gamelib.draw_image('icons/trash.ppm',
+                       TRASH[0] + 6, HEIGHT_TOOL_BAR[0] + 4)
 
 def show_input_color(paint):
     '''
