@@ -43,7 +43,9 @@ PNG_COLOR_TYPE = 3  # indexed by palette
 PNG_COMPRESSION = 0  # zlib/deflate
 PNG_FILTER = 0  # basic filter (none)
 PNG_INTERLACED = 0  # without interlacing
-PNG_FILTER_TYPE = 0  # sin filtro
+PNG_FILTER_TYPE = 0  # whitout filter
+PNG_IMAGE_SIZE = 50 
+
 
 def _generate_chunk(type, data):
     length = struct.pack("!I", len(data))
