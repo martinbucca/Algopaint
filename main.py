@@ -228,6 +228,38 @@ def redo_last_action(paint):
         paint['done actions'].push(paint['undone actions'].pop())
 
 
+def change_pixel_color(paint, x, y):
+    for pixel, pixel_data in paint['pixels'].items():
+        x1, y1, x2, y2 = pixel_data['pos']
+        if x1 < x < x2 and y1 < y < y2:
+            if paint['bucket']:
+                current_color = pixel_data['color']
+                paint['done actions'].push(paint_around(
+                    pixel, paint, current_color))
+            else:
+                prev_color = pixel_data['color']
+                pixel_data['color'] = paint['selected color']
+                post_color = pixel_data['color']
+                paint['done actions'].push(
+                    {'prev color': prev_color, 'post color': post_color, 'pixels changed': [pixel]})
+
+def change_color_selected(paint, x):
+    color = clicked_color(x)
+    if color:
+        paint['selected color'] = color
+        # if bucket or eraser is active and a color is clicked, it is deactivated
+        paint['bucket'] = paint['eraser'] = paint['entered color selected'] = False
+        paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
+
+def save_ppm_clicked(x, y):
+    return SAVE_PPM_BUTTON[0] < x < SAVE_PPM_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]
+
+def save_png_clicked(x, y):
+    return SAVE_PNG_BUTTON[0] < x < SAVE_PNG_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]
+
+def upload_ppm_clicked(x, y):
+    return LOAD_PPM_BUTTON[0] < x < LOAD_PPM_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]
+
 def main():
 
     gamelib.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -240,26 +272,9 @@ def main():
         if ev.type == gamelib.EventType.ButtonPress and ev.mouse_button == 1:
             x, y = ev.x, ev.y
             if shortcut_color_clicked(x, y):
-                color = clicked_color(x)
-                if color:
-                    paint['selected color'] = color
-                    # if bucket or eraser is active and a color is clicked, it is deactivated
-                    paint['bucket'] = paint['eraser'] = paint['entered color selected'] = False
-                    paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
+                change_color_selected(paint, x)
             elif pixel_clicked(x, y) and paint['selected color'] != '':
-                for pixel, pixel_data in paint['pixels'].items():
-                    x1, y1, x2, y2 = pixel_data['pos']
-                    if x1 < x < x2 and y1 < y < y2:
-                        if paint['bucket']:
-                            current_color = pixel_data['color']
-                            paint['done actions'].push(paint_around(
-                                pixel, paint, current_color))
-                        else:
-                            prev_color = pixel_data['color']
-                            pixel_data['color'] = paint['selected color']
-                            post_color = pixel_data['color']
-                            paint['done actions'].push(
-                                {'prev color': prev_color, 'post color': post_color, 'pixels changed': [pixel]})
+                change_pixel_color(paint, x, y)         
             elif tool_bar_clicked(x, y):
                 if UNDO[0] < x < UNDO[1]:
                     undo_last_action(paint)
@@ -296,13 +311,13 @@ def main():
                     paint['bucket'] = paint['eraser'] = False
                     paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
 
-            elif LOAD_PPM_BUTTON[0] < x < LOAD_PPM_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]:
+            elif upload_ppm_clicked(x, y):
                 load_as_ppm(paint)
                 paint['undone actions'].clear()
-            elif SAVE_PPM_BUTTON[0] < x < SAVE_PPM_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]:
+            elif save_ppm_clicked(x, y):
                 save_as_ppm(paint)
                 paint['undone actions'].clear()
-            elif SAVE_PNG_BUTTON[0] < x < SAVE_PNG_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]:
+            elif save_png_clicked(x, y):
                 save_as_png(paint)
                 paint['undone actions'].clear()
 
