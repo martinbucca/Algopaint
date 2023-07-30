@@ -61,42 +61,50 @@ def save_as_ppm(paint):
                 ppm.write('\n') # to save it in the correct format
     
 
-'''    
 def load_as_ppm(paint):
-    Opens an image in ppm format in the interface
+    '''Opens an image in ppm format in the interface'''
     name = gamelib.input('Open PPM:')
     if name == None: # close button
         return
     try:
-        ppm = open(name)
-        file = []
-        for line in ppm:
-            file += line.rstrip().split() 
+        image_ppm = open(name)
+        file = image_ppm.read().split()
         paint['header'] = file[0]
-        paint['width'], paint['height'] = int(file[1]), int(file[2])
+        paint['width']  = int(file[1])
+        paint['height'] = int(file[2])
         paint['intensity'] = int(file[3])
         paint['pixels'] = {}
+        # update the dictionary with the new pixels
         for j in range(paint['height']):
             for i in range(paint['width']):
-                paint['pixels'][f'{j},{i}'] = {} # update the dictionary
+                paint['pixels'][f'{j},{i}'] = {} 
         colors = file[4::] # rgb list of the file colors
-        c = 0 
+        offset = 0 
         for j in range(paint['height']):
             for i in range(0, len(colors)//paint['height'], 3):
-                x1 = WIDTH_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * paint['width']  + PIXEL_SIZE * i//3
-                y1 = HEIGHT_CENTERED_PIXEL[0] - POSITION_RELATIVE_TO_SIZE * paint['height'] + PIXEL_SIZE * j
-                x2 = WIDTH_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * paint['width'] + PIXEL_SIZE * i//3
-                y2 = HEIGHT_CENTERED_PIXEL[1] - POSITION_RELATIVE_TO_SIZE * paint['height'] + PIXEL_SIZE * j
-                paint['pixels'][f'{j},{i//3}']['pos'] = (x1, y1, x2, y2)
-                r, g, b = int(colors[c]), int(colors[c + 1]), int(colors[c + 2])
-                paint['pixels'][f'{j},{i//3}']['color'] = '#' + f'{r:02x}' + f'{g:02x}' + f'{b:02x}'
-                c += 3
-        ppm.close()
-    except (FileNotFoundError, IOError, EOFError,PermissionError, UnicodeDecodeError):
-        gamelib.say(f'Error. The file {name} does not exist or can not be opened.')
+                x1 = PIXEL_ZONE[0] + PIXEL_SIZE * i//3
+                y1 = PIXEL_ZONE[1] + PIXEL_SIZE * j
+                x2 = x1 + PIXEL_SIZE
+                y2 = y1 + PIXEL_SIZE
+                pixel = f'{j},{i//3}'
+                r, g, b = map(int, colors[offset:offset + 3])
+                paint['pixels'][pixel]['pos'] = (x1, y1, x2, y2)
+                paint['pixels'][pixel]['color'] = f'#{r:02x}{g:02x}{b:02x}'
+                offset += 3
+        image_ppm.close()
+    except FileNotFoundError:
+        gamelib.say(f'Error. The file "{name}" does not exist.')
+    except (IOError, PermissionError, UnicodeDecodeError):
+        gamelib.say(f'Error. The file "{name}" could not be opened or read.')
     except ValueError:
-        gamelib.say('Sorry. Something went wrong')
-'''
+        gamelib.say('Sorry. Something went wrong.')
+
+
+
+
+
+
+
 def save_as_png(paint):
     '''Save an image in png format.'''
     name = gamelib.input('Save as:')
@@ -176,13 +184,20 @@ def tool_bar_clicked(x, y):
 
 
 def undo_last_action(paint, done_actions, undone_actions):
-    if not done_actions.empty(): #si esta vacia no hay acciones que deshacer
+    if not done_actions.empty(): # if there is an action to undo
         last_action = done_actions.get_top()
         for pixel in last_action['pixels changed']:
             prev_color = last_action['prev color']
             paint['pixels'][pixel]['color'] = prev_color
         undone_actions.push(done_actions.pop())
 
+def redo_last_action(paint, done_actions, undone_actions):
+    if not undone_actions.empty(): # if there is an action to redo
+        last_action = undone_actions.get_top()
+        for pixel in last_action['pixels changed']:
+            post_color = last_action['post color']
+            paint['pixels'][pixel]['color'] = post_color
+        done_actions.push(undone_actions.pop())
 
 def main():
     
@@ -208,10 +223,6 @@ def main():
                     paint['selected color'] = color
                     paint['bucket'] = paint['eraser'] = paint['entered color selected'] = False # if bucket or eraser is active and a color is clicked, it is deactivated
                     undone_actions.clear() # if a color is clicked, the redo stack is cleared
-
-
-
-            
             elif pixel_clicked(x, y) and paint['selected color'] != '':
                 for pixel, pixel_data in paint['pixels'].items():
                     x1, y1, x2, y2 = pixel_data['pos']
@@ -228,21 +239,16 @@ def main():
                 if UNDO[0] < x < UNDO[1]:
                     undo_last_action(paint, done_actions, undone_actions)
                 elif REDO[0] < x < REDO[1]:
-                    continue
-
-
+                    redo_last_action(paint, done_actions, undone_actions)
                 elif BUCKET[0] < x < BUCKET[1]:
                     if paint['selected color'] != '':
-                        paint['bucket'] = True #PARA ACTIVAR EL BUCKET PRIMERO TENES QUE TENER UN COLOR SELECCIONADO
+                        paint['bucket'] = True # to activate the bucket you must first have a selected color
                     undone_actions.clear() # if bucket is clicked, the redo stack is cleared
-
-
                 elif ERASER[0] < x < ERASER[1]:
                     paint['eraser'] = True
                     paint['selected color'] = DEFAULT_PIXEL_COLOR
                     paint['bucket'] = paint['entered color selected'] = False
                     undone_actions.clear() # if a eraser is clicked, the redo stack is cleared
-
                 elif INPUT_COLORS[0] < x < INPUT_COLORS[1]:
                     color = gamelib.input('Enter a color in hexadecimal code (#RRGGBB)')
                     if color == None:
@@ -253,80 +259,24 @@ def main():
                         paint['entered color'] = paint['selected color'] = color
                         paint['entered color selected'] = True
                         paint['bucket'] = paint['eraser'] = False
-                    undone_actions.clear() # if a color is clicked, the redo stack is cleared
-                  
+                    undone_actions.clear() # if a color is clicked, the redo stack is cleared    
                 elif INPUT_COLOR[0] < x < INPUT_COLOR[1]:
                     paint['entered color selected'] = True
                     paint['selected color'] = paint['entered color']
                     paint['bucket'] = paint['eraser'] = False
                     undone_actions.clear() # if a color is clicked, the redo stack is cleared
-                
-
-
-
-            '''
-            if INPUT_COLORS[0] <= x <= INPUT_COLORS[2] and INPUT_COLORS[1] <= y <= INPUT_COLORS[3]:
-                while not undone_actions.empty():
-                    undone_actions.pop()
-                color = gamelib.input('Enter a color in hexadecimal code (#RRGGBB)')
-                if color == None:
-                    continue
-                if not validate_color(color):
-                    gamelib.say('Invalid color, you should enter something like this: #00ff23')
-                else:
-                    paint['entered color'] = color
-                    paint['selected color'] = color
-                    paint['bucket'] = False
-                    
-
-            if SAVE_PPM_BUTTON[0] < x <  SAVE_PPM_BUTTON[2] and SAVE_PPM_BUTTON[1] < y < SAVE_PPM_BUTTON[3]:
-                while not undone_actions.empty():
-                    undone_actions.pop()
-                save_as_ppm(paint)
-
-            if LOAD_PPM_BUTTON[0] < x <  LOAD_PPM_BUTTON[2] and LOAD_PPM_BUTTON[1] < y < LOAD_PPM_BUTTON[3]:
-                while not undone_actions.empty():
-                    undone_actions.pop()
+            
+            elif LOAD_PPM_BUTTON[0] < x < LOAD_PPM_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]:
                 load_as_ppm(paint)
-
-            if SAVE_PNG_BUTTON[0] < x <  SAVE_PNG_BUTTON[2] and SAVE_PNG_BUTTON[1] < y < SAVE_PNG_BUTTON[3]:
-                while not undone_actions.empty(): 
-                    undone_actions.pop()
+                undone_actions.clear()
+            elif SAVE_PPM_BUTTON[0] < x < SAVE_PPM_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]:
+                save_as_ppm(paint)
+                undone_actions.clear()
+            elif SAVE_PNG_BUTTON[0] < x < SAVE_PNG_BUTTON[1] and HEIGHT_FILE_BUTTONS[0] < y < HEIGHT_FILE_BUTTONS[1]:
                 save_as_png(paint)
+                undone_actions.clear()
 
-            if UNDO[0] < x < UNDO[2] and UNDO[1] < y < UNDO[3]:
-                if not done_actions.empty(): #si esta vacia no hay acciones que deshacer
-                    if done_actions.get_top()[0] != 'bucket': #si el primer elemento es BUCKET, se deben cambiar los colores de varios pixeles
-                        for pixel in paint['pixels']:
-                            if paint['pixels'][pixel]['pos'] == done_actions.get_top()[0]: 
-                                paint['pixels'][pixel]['color'] = done_actions.get_top()[1] #le cambio el color al ultimo estado de ese color que es el tope
-                                undone_actions.push(done_actions.pop())
-                                break
-                    else:
-                        for pixel in done_actions.get_top()[1]:
-                            paint['pixels'][pixel[0]]['color'] = pixel[1]
-                        undone_actions.push(done_actions.pop())
-                    
-
-            if REDO[0] < x < REDO[2] and REDO[1] < y < REDO[3]:
-                if not undone_actions.empty(): #si esta vacia no hay acciones que rehacer
-                    if undone_actions.get_top()[0] != 'bucket':
-                        for pixel in paint['pixels']:
-                            if paint['pixels'][pixel]['pos'] == undone_actions.get_top()[0]: 
-                                paint['pixels'][pixel]['color'] = undone_actions.get_top()[2] #le cambio el color al ultimo estado de ese color que es el tope
-                                done_actions.push(undone_actions.pop())
-                                break
-                    else:
-                        for pixel in undone_actions.get_top()[1]:
-                            paint['pixels'][pixel[0]]['color'] = pixel[2]
-                        done_actions.push(undone_actions.pop())
-                    
-            if BUCKET[0] < x < BUCKET[2] and BUCKET[1] < y < BUCKET[3]:
-                while not undone_actions.empty():
-                    undone_actions.pop()
-                if paint['selected color'] != '':
-                    paint['bucket'] = True #PARA ACTIVAR EL BUCKET PRIMERO TENES QUE TENER UN COLOR SELECCIONADO
-         '''
+            
         
 
 
