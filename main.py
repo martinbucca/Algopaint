@@ -1,8 +1,8 @@
-from png import PNG_IMAGE_SIZE, write
+from utils.png import PNG_IMAGE_SIZE, write
 import re
-from stack import Stack
-import gamelib
-from constants import *
+from utils.stack import Stack
+import gamelib as gamelib
+from utils.constants import *
 from ui import show_paint
 
 

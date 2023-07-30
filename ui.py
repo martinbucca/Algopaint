@@ -1,5 +1,5 @@
-from constants import *
-import gamelib
+from utils.constants import *
+import gamelib as gamelib
 
 
 def show_title():
