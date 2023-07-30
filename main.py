@@ -24,7 +24,8 @@ def new_paint():
         'height': HEIGHT_INITIAL_IMAGE,
         'intensity': 255,
         'selected color': '',
-        'entered color': '#ffffef',
+        'entered color': 'white',
+        'entered color selected': False,
         'bucket': False,
         'eraser': False,
         'pixels': {
@@ -173,7 +174,7 @@ def pixel_clicked(x, y):
 
 def tool_bar_clicked(x, y):
     '''Returns True if the tool bar was clicked.'''
-    return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= INPUT_COLORS[1]
+    return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= INPUT_COLOR[1]
 
 def main():
     
@@ -197,7 +198,7 @@ def main():
                 color = clicked_color(x)
                 if color:
                     paint['selected color'] = color
-                    paint['bucket'] = paint['eraser'] = False # if bucket or eraser is active and a color is clicked, it is deactivated
+                    paint['bucket'] = paint['eraser'] = paint['entered color selected'] = False # if bucket or eraser is active and a color is clicked, it is deactivated
                     undone_actions.clear() # if a color is clicked, the redo stack is cleared
 
 
@@ -226,6 +227,7 @@ def main():
                 elif ERASER[0] < x < ERASER[1]:
                     paint['eraser'] = True
                     paint['selected color'] = DEFAULT_PIXEL_COLOR
+                    paint['bucket'] = paint['entered color selected'] = False
                 elif INPUT_COLORS[0] < x < INPUT_COLORS[1]:
                     color = gamelib.input('Enter a color in hexadecimal code (#RRGGBB)')
                     if color == None:
@@ -233,10 +235,19 @@ def main():
                     if not validate_color(color):
                         gamelib.say('Invalid color, you should enter something like this: #00ff23')
                     else:
-                        paint['entered color'] = color
-                        paint['selected color'] = color
+                        paint['entered color'] = paint['selected color'] = color
+                        paint['entered color selected'] = True
                         paint['bucket'] = paint['eraser'] = False
                     undone_actions.clear() # if a color is clicked, the redo stack is cleared
+                  
+                elif INPUT_COLOR[0] < x < INPUT_COLOR[1]:
+                    paint['entered color selected'] = True
+                    paint['selected color'] = paint['entered color']
+                    paint['bucket'] = paint['eraser'] = False
+                    undone_actions.clear() # if a color is clicked, the redo stack is cleared
+                
+
+
 
             '''
             if INPUT_COLORS[0] <= x <= INPUT_COLORS[2] and INPUT_COLORS[1] <= y <= INPUT_COLORS[3]:
