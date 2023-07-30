@@ -23,7 +23,7 @@ def show_pixels(paint):
     for pixel in paint['pixels'].values():
         x1, y1, x2, y2 = pixel['pos']
         color = pixel['color']
-        gamelib.draw_rectangle(x1, y1, x2, y2, fill=color)
+        gamelib.draw_rectangle(x1, y1, x2, y2, fill=color, outline='black')
 
 def show_shortcut_colors(paint):
     '''Shows the shortcut colors in the interface'''
