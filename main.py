@@ -62,7 +62,7 @@ def save_as_ppm(paint):
 
 '''    
 def load_as_ppm(paint):
-    '''Opens an image in ppm format in the interface'''
+    Opens an image in ppm format in the interface
     name = gamelib.input('Open PPM:')
     if name == None: # close button
         return
@@ -127,7 +127,7 @@ def validate_color(color):
     return bool(re.match(r'^#[0-9a-fA-F]{6}$', color))
 
 def paint_around(pixel, paint, color):
-    painted_pixels = ['BUCKET', []] # me guardo los pixeles pintados, el color anterior y el color al que fue pintado
+    painted_pixels = ['bucket', []] # me guardo los pixeles pintados, el color anterior y el color al que fue pintado
     _paint_around(pixel, paint, color, painted_pixels)
     return painted_pixels
 
@@ -171,6 +171,9 @@ def pixel_clicked(x, y):
     y2 = PIXEL_ZONE[1] + PIXEL_SIZE * HEIGHT_INITIAL_IMAGE
     return PIXEL_ZONE[0] <= x <= x2 and PIXEL_ZONE[1] <= y <= y2
 
+def tool_bar_clicked(x, y):
+    '''Returns True if the tool bar was clicked.'''
+    return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= INPUT_COLORS[1]
 
 def main():
     
@@ -193,28 +196,49 @@ def main():
             if shortcut_color_clicked(x, y):
                 color = clicked_color(x)
                 if color:
-                    undone_actions.clear() # if a color is clicked, the redo stack is cleared
                     paint['selected color'] = color
                     paint['bucket'] = paint['eraser'] = False # if bucket or eraser is active and a color is clicked, it is deactivated
+                    undone_actions.clear() # if a color is clicked, the redo stack is cleared
 
+
+
+            
+            elif pixel_clicked(x, y) and paint['selected color'] != '':
+                for pixel, pixel_data in paint['pixels'].items():
+                    x1, y1, x2, y2 = pixel_data['pos']
+                    if x1 < x < x2 and y1 < y < y2:
+                        if paint['bucket']:
+                            color = pixel_data['color']
+                            done_actions.push(paint_around(pixel, paint, color))
+                        else:
+                            pixel_data['color'] = paint['selected color']
+                            pos_pixel = pixel_data['pos']
+                            prev_color = pixel_data['color']
+                            post_color = pixel_data['color']
+                            done_actions.push((pos_pixel, prev_color, post_color))
+            elif tool_bar_clicked(x, y):
+                if UNDO[0] < x < UNDO[1]:
+                    continue
+                elif REDO[0] < x < REDO[1]:
+                    continue
+                elif BUCKET[0] < x < BUCKET[1]:
+                    continue
+                elif ERASER[0] < x < ERASER[1]:
+                    paint['eraser'] = True
+                    paint['selected color'] = DEFAULT_PIXEL_COLOR
+                elif INPUT_COLORS[0] < x < INPUT_COLORS[1]:
+                    color = gamelib.input('Enter a color in hexadecimal code (#RRGGBB)')
+                    if color == None:
+                        continue
+                    if not validate_color(color):
+                        gamelib.say('Invalid color, you should enter something like this: #00ff23')
+                    else:
+                        paint['entered color'] = color
+                        paint['selected color'] = color
+                        paint['bucket'] = paint['eraser'] = False
+                    undone_actions.clear() # if a color is clicked, the redo stack is cleared
 
             '''
-            elif pixel_clicked(x, y):
-            for pixel in paint['pixels']:
-                
-                x1, y1, x2, y2 = paint['pixels'][pixel]['pos'][0], paint['pixels'][pixel]['pos'][1], paint['pixels'][pixel]['pos'][2], paint['pixels'][pixel]['pos'][3]
-                if x1 < x < x2 and y1 < y < y2 and paint['selected color'] != '':
-                    if paint['bucket']:
-                        color = paint['pixels'][pixel]['color']
-                        done_actions.push(paint_around(pixel, paint, color))
-                    
-                    else:       
-                        pos_pixel = paint['pixels'][pixel]['pos']
-                        prev_color = paint['pixels'][pixel]['color']
-                        paint['pixels'][pixel]['color'] = paint['selected color'] #se pinta el pixel del color seleccionado si es que se selecciono alguno.
-                        post_color = paint['pixels'][pixel]['color']
-                        done_actions.push((pos_pixel, prev_color, post_color)) #apilo la posicion del pixel el color antes de ser pintado y despues
-            
             if INPUT_COLORS[0] <= x <= INPUT_COLORS[2] and INPUT_COLORS[1] <= y <= INPUT_COLORS[3]:
                 while not undone_actions.empty():
                     undone_actions.pop()
