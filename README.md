@@ -3,7 +3,7 @@ Paint implemented with python and gamelib
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="readme_images/logo.gif" alt="Logo" width="80" height="80">
   </a>
   <p align="center">
     <strong>An awesome functional paint with some useful tools!</strong>
