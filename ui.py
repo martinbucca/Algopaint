@@ -9,7 +9,7 @@ def show_title():
     gamelib.draw_rectangle(0, 0, WINDOW_WIDTH, HEIGHT_TITLE, fill=TITLE_COLOR)
     gamelib.draw_image('icons/logo.ppm', 185, 4)
     gamelib.draw_text('ALGOPAINT', WIDTH_TEXT_TITLE,
-                      HEIGHT_TEXT_TITLE, bold=True, fill='black')
+                      HEIGHT_TEXT_TITLE, fill='black')
 
 
 def show_save_load_image_buttons(paint):
@@ -30,11 +30,11 @@ def show_save_load_image_buttons(paint):
     gamelib.draw_image('icons/save.ppm', x_save_ppm, image_height)
     gamelib.draw_image('icons/save.ppm', x_save_png, image_height)
     gamelib.draw_text('Upload PPM', X_LOAD_PPM_TEXT,
-                      HEIGHT_FILE_TEXT, fill='black', bold=True)
+                      HEIGHT_FILE_TEXT, fill='black')
     gamelib.draw_text('Save as PPM', X_SAVE_PPM_TEXT,
-                      HEIGHT_FILE_TEXT, fill='black', bold=True)
+                      HEIGHT_FILE_TEXT, fill='black')
     gamelib.draw_text('Save as PNG', X_SAVE_PNG_TEXT,
-                      HEIGHT_FILE_TEXT, fill='black', bold=True)
+                      HEIGHT_FILE_TEXT, fill='black')
 
 
 def show_pixels(paint):
