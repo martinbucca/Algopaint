@@ -8,10 +8,22 @@
 </div>
       
 ## About The Project
-<div style="display: flex;">
-  <img src="readme_images/chicken.png" alt="Chicken Image" style="width: 300px; margin-right: 10px;">
-  <img src="readme_images/pixeled_chicken.png" alt="Pixeled Chicken Image" style="width: 300px; margin-left: 10px;">
+<div style="display: flex; flex-direction: column;">
+  <div style="display: flex; justify-content: space-between;">
+    <img src="readme_images/chicken.png" alt="Chicken Image" style="width: 300px; height: 400px; margin-right: 10px;">
+    <img src="readme_images/pixeled_chicken.png" alt="Pixeled Chicken Image" style="width: 300px; height: 400px; margin-left: 10px;">
+  </div>
+  <div style="display: flex; justify-content: space-between;">
+    <img src="readme_images/bird.png" alt="Bird Image" style="width: 300px; height: 400px; margin-left: 10px;">
+    <img src="readme_images/pixeled_bird.png" alt="Pixeled Bird Image" style="width: 300px; height: 400px; margin-right: 10px;">
+  </div>
 </div>
+
+
+
+
+
+
 
 ### Prerequisites
 * **Python 3**: Before running this application, please ensure that you have Python installed on your computer. You can download the latest stable version of Python from the official website: https://www.python.org/downloads/
