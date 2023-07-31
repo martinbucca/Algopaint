@@ -31,6 +31,18 @@ def main():
                 logic.save_as_ppm(paint)
             elif event.save_png_clicked(x, y):
                 logic.save_as_png(paint)
+            ev = gamelib.wait()
+            if not ev:
+                break
+            while event.pixel_clicked(x, y) and paint['selected color'] != '' and ev.type == gamelib.EventType.Motion:
+                x, y = ev.x, ev.y
+                logic.change_pixel_color(paint, x, y)
+                show_paint(paint)
+                ev = gamelib.wait()
+                if not ev:
+                    break
+
+        
 
 
 gamelib.init(main)
