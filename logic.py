@@ -209,12 +209,12 @@ def change_color_selected(paint, x):
 
 def change_pixel_color(paint, x, y):
     '''
-    Modifies the color of a pixel in the paint.
+    Modifies the color of a pixel in the paint only if the pixel color is different from the selected color.
     If the bucket is active, it paints the pixels around the pixel that was clicked.
     '''
     for pixel, pixel_data in paint['pixels'].items():
         x1, y1, x2, y2 = pixel_data['pos']
-        if x1 < x <= x2 and y1 < y <= y2:
+        if x1 < x <= x2 and y1 < y <= y2 and paint['selected color'] != pixel_data['color']:
             if paint['bucket']:
                 current_color = pixel_data['color']
                 paint['done actions'].push(paint_around(

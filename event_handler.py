@@ -36,6 +36,12 @@ def pixel_clicked(x, y):
     y2 = PIXEL_ZONE[1] + PIXEL_SIZE * HEIGHT_INITIAL_IMAGE
     return PIXEL_ZONE[0] <= x <= x2 and PIXEL_ZONE[1] <= y <= y2
 
+def drag_painting(paint, x, y, ev):
+    '''
+    If the user is dragging the mouse with a selected color and the bucket is not activated, returns True.
+    False otherwise
+    '''
+    return pixel_clicked(x, y) and paint['selected color'] != '' and not paint['bucket'] and ev.type == gamelib.EventType.Motion
 
 def tool_bar_clicked(x, y):
     '''

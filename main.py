@@ -34,7 +34,7 @@ def main():
             ev = gamelib.wait()
             if not ev:
                 break
-            while event.pixel_clicked(x, y) and paint['selected color'] != '' and ev.type == gamelib.EventType.Motion:
+            while event.drag_painting(paint, x, y, ev):
                 x, y = ev.x, ev.y
                 logic.change_pixel_color(paint, x, y)
                 show_paint(paint)
