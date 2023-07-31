@@ -24,14 +24,14 @@ This project is a simple paint application implemented in Python using the 'game
 ### Features
 The paint application offers the following set of tools and features:
 
-* Save and Load Images: Users can save their images in multiple formats, including PPM and PNG, and load previously saved images in PPM format.
-* Shortcut Color Bar: A color bar displaying 10 predefined colors that users can quickly select for drawing.
-* Undo and Redo: The ability to undo and redo previous actions to easily correct mistakes or make changes.
-* Bucket Fill: An option to fill a contiguous area of pixels with a selected color, similar to a paint bucket tool.
-* Eraser: An eraser tool to remove specific color pixels.
-* Pixels Border Visibility: Users can choose whether to display the borders of pixels for a better visual experience.
-* Clear All: A button to clear the entire imaage, allowing users to start fresh.
-* Custom Color Palette: Users can enter custom colors in the format "#rrggbb" (hexadecimal) to create and use their preferred colors. The palette can store up to three custom colors at a time as a shortcut.
+* **Save and Load Images**: Users can save their images in multiple formats, including PPM and PNG, and load previously saved images in PPM format.
+* **Shortcut Color Bar**: A color bar displaying 10 predefined colors that users can quickly select for drawing.
+* **Undo and Redo**: The ability to undo and redo previous actions to easily correct mistakes or make changes.
+* **Bucket Fill**: An option to fill a contiguous area of pixels with a selected color, similar to a paint bucket tool.
+* **Eraser**: An eraser tool to remove specific color pixels.
+* **Pixels Border Visibility**: Users can choose whether to display the borders of pixels for a better visual experience.
+* **Clear All**: A button to clear the entire imaage, allowing users to start fresh.
+* **Custom Color Palette**: Users can enter custom colors in the format "#rrggbb" (hexadecimal) to create and use their preferred colors. The palette can store up to three custom colors at a time as a shortcut.
   
 ## Prerequisites
 * **Python 3**: Before running this application, please ensure that you have Python installed on your computer. You can download the latest stable version of Python from the official website: https://www.python.org/downloads/
