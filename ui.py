@@ -1,7 +1,6 @@
 from utils.constants import *
 import gamelib as gamelib
 
-
 def show_title():
     '''
     Shows the title of the paint
@@ -10,7 +9,6 @@ def show_title():
     gamelib.draw_image('icons/logo.ppm', 185, 4)
     gamelib.draw_text('ALGOPAINT', WIDTH_TEXT_TITLE,
                       HEIGHT_TEXT_TITLE, bold=True, fill='black')
-
 
 def show_save_load_image_buttons(paint):
     '''
@@ -36,7 +34,6 @@ def show_save_load_image_buttons(paint):
     gamelib.draw_text('Save as PNG', X_SAVE_PNG_TEXT,
                       HEIGHT_FILE_TEXT, fill='black', bold=True)
 
-
 def show_pixels(paint):
     '''
     Shows the pixels to draw in the interface.
@@ -48,7 +45,6 @@ def show_pixels(paint):
         # either black (to see pixels) or the color of the pixel
         outline = 'black' if paint['pixeled'] else color
         gamelib.draw_rectangle(x1, y1, x2, y2, fill=color, outline=outline)
-
 
 def show_shortcut_colors(paint):
     '''
@@ -66,7 +62,6 @@ def show_shortcut_colors(paint):
             gamelib.draw_rectangle(
                 x1, HEIGHT_COLOR_BAR[0], x2, HEIGHT_COLOR_BAR[1], fill=color, activeoutline='black', activewidth=2)
 
-
 def show_tool_bar(paint):
     '''
     Shows the tool bar in the interface
@@ -77,7 +72,6 @@ def show_tool_bar(paint):
     show_pixeled_option()
     show_trash()
     show_input_color(paint)
-
 
 def show_undo_redo_buttons(paint):
     '''
@@ -93,7 +87,6 @@ def show_undo_redo_buttons(paint):
                            activeoutline='black', outline='black', activewidth=3)
     gamelib.draw_image('icons/redo1.ppm', x_redo_image, y_redo_image)
 
-
 def show_bucket(paint):
     '''
     Shows the bucket in the interface
@@ -103,7 +96,6 @@ def show_bucket(paint):
                            outline='black', width=bucket_width, activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/bucket.ppm',
                        BUCKET[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
-
 
 def show_eraser(paint):
     '''
@@ -118,8 +110,10 @@ def show_eraser(paint):
     gamelib.draw_image('icons/eraser.ppm',
                        ERASER[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
 
-
 def show_pixeled_option():
+    '''
+    Shows the pixeled/unpixeled button in the interface
+    '''
     gamelib.draw_rectangle(PIXELED[0], HEIGHT_TOOL_BAR[0], PIXELED[1],
                            HEIGHT_TOOL_BAR[1], outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/border.ppm',
@@ -142,24 +136,56 @@ def show_input_color(paint):
                            HEIGHT_TOOL_BAR[1], outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/palette.ppm',
                        INPUT_COLORS[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
-    if paint['custom colors selected'][0] and paint['custom colors'][0] != 'white':
+    
+def show_custom_colors(paint):
+    '''
+    Shows the custom colors in the interface
+    '''
+    show_custom_color1(paint)
+    show_custom_color2(paint)
+    show_custom_color3(paint)
+    
+def show_custom_color1(paint):
+    '''
+    Shows the custom color 1 in the interface
+    '''
+    custom_color_selected = paint['custom colors selected'][0]
+    custom_color = paint['custom colors'][0]
+    if custom_color_selected and custom_color != 'white':
         gamelib.draw_rectangle(CUSTOM_COLOR_1[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_1[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][0], outline='black', width=4)
+                               HEIGHT_TOOL_BAR[1], fill=custom_color, outline='black', width=4)
     else:
         gamelib.draw_rectangle(CUSTOM_COLOR_1[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_1[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][0], outline='black')
-    if paint['custom colors selected'][1] and paint['custom colors'][1] != 'white':
+                               HEIGHT_TOOL_BAR[1], fill=custom_color, outline='black')
+        
+def show_custom_color2(paint):
+    '''
+    Shows the custom color 2 in the interface
+    '''
+    custom_color_selected = paint['custom colors selected'][1]
+    custom_color = paint['custom colors'][1]
+    if custom_color_selected and custom_color != 'white':
         gamelib.draw_rectangle(CUSTOM_COLOR_2[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_2[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][1], outline='black', width=4)
+                               HEIGHT_TOOL_BAR[1], fill=custom_color, outline='black', width=4)
     else:
         gamelib.draw_rectangle(CUSTOM_COLOR_2[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_2[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][1], outline='black')
-    if paint['custom colors selected'][2] and paint['custom colors'][2] != 'white':
+                               HEIGHT_TOOL_BAR[1], fill=custom_color, outline='black')
+        
+def show_custom_color3(paint):
+    '''
+    Shows the custom color 3 in the interface
+    '''
+    custom_color_selected = paint['custom colors selected'][2]
+    custom_color = paint['custom colors'][2]
+    if custom_color_selected and custom_color != 'white':
         gamelib.draw_rectangle(CUSTOM_COLOR_3[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_3[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][2], outline='black', width=4)
+                               HEIGHT_TOOL_BAR[1], fill=custom_color, outline='black', width=4)
     else:
         gamelib.draw_rectangle(CUSTOM_COLOR_3[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_3[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][2], outline='black')
+                               HEIGHT_TOOL_BAR[1], fill=custom_color, outline='black')
+
+
+
 
 
 def show_paint(paint):
@@ -175,4 +201,5 @@ def show_paint(paint):
     show_pixels(paint)
     show_shortcut_colors(paint)
     show_tool_bar(paint)
+    show_custom_colors(paint)
     gamelib.draw_end()

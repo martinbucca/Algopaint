@@ -138,11 +138,11 @@ def handle_tool_clicked(paint, x):
         logic.select_custom_color(paint)
         paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
     elif custom_color1_clicked(x):
-        logic.change_color_to_custom(paint, 1)
+        logic.change_color_to_custom(paint, 0)
         paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
     elif custom_color2_clicked(x):
-        logic.change_color_to_custom(paint, 2)
+        logic.change_color_to_custom(paint, 1)
         paint['undone actions'].clear()
     elif custom_color3_clicked(x):
-        logic.change_color_to_custom(paint, 3)
+        logic.change_color_to_custom(paint, 2)
         paint['undone actions'].clear()

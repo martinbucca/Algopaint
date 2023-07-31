@@ -4,7 +4,6 @@ from utils.stack import Stack
 import gamelib as gamelib
 from utils.constants import *
 
-
 def calculate_pixel_position(i, j):
     '''
     Calculates the position of a pixel in the interface
@@ -14,7 +13,6 @@ def calculate_pixel_position(i, j):
     x2 = x1 + PIXEL_SIZE
     y2 = y1 + PIXEL_SIZE
     return x1, y1, x2, y2
-
 
 def new_paint():
     '''
@@ -44,31 +42,6 @@ def new_paint():
         }
     }
     return empty_image
-
-
-def save_as_ppm(paint):
-    '''
-    Saves an image in ppm format
-    '''
-    name = gamelib.input('Save as:')
-    if name == None:  # close button
-        return
-    paint['header'] = name
-    with open(name, 'w') as ppm:
-        ppm.write(paint['header'] + '\n')
-        ppm.write(str(paint['width']) + ' ' + str(paint['height']) + '\n')
-        ppm.write(str(paint['intensity']) + '\n')
-        for pixel in paint['pixels']:
-            r, g, b = int(paint['pixels'][pixel]['color'][1:3], 16), int(
-                paint['pixels'][pixel]['color'][3:5], 16), int(paint['pixels'][pixel]['color'][5:7], 16)
-            ppm.write(str(r) + ' ')
-            ppm.write(str(g) + ' ')
-            ppm.write(str(b) + '   ')
-            if int(pixel.split(',')[1]) + 1 == paint['width']:  # last of row
-                ppm.write('\n')  # to save it in the correct format
-    paint['undone actions'].clear()
-
-
 
 def load_as_ppm(paint):
     '''
@@ -112,7 +85,27 @@ def load_as_ppm(paint):
     except ValueError:
         gamelib.say('Sorry. Something went wrong.')
 
-
+def save_as_ppm(paint):
+    '''
+    Saves an image in ppm format
+    '''
+    name = gamelib.input('Save as:')
+    if name == None:  # close button
+        return
+    paint['header'] = name
+    with open(name, 'w') as ppm:
+        ppm.write(paint['header'] + '\n')
+        ppm.write(str(paint['width']) + ' ' + str(paint['height']) + '\n')
+        ppm.write(str(paint['intensity']) + '\n')
+        for pixel in paint['pixels']:
+            r, g, b = int(paint['pixels'][pixel]['color'][1:3], 16), int(
+                paint['pixels'][pixel]['color'][3:5], 16), int(paint['pixels'][pixel]['color'][5:7], 16)
+            ppm.write(str(r) + ' ')
+            ppm.write(str(g) + ' ')
+            ppm.write(str(b) + '   ')
+            if int(pixel.split(',')[1]) + 1 == paint['width']:  # last of row
+                ppm.write('\n')  # to save it in the correct format
+    paint['undone actions'].clear()
 
 def save_as_png(paint):
     '''
@@ -143,15 +136,6 @@ def save_as_png(paint):
     write(name, palette, final_image)
     paint['undone actions'].clear()
 
-
-
-def validate_color(color):
-    '''
-    Given a string, validates that it is a hexadecimal color
-    '''
-    return bool(re.match(r'^#[0-9a-fA-F]{6}$', color))
-
-
 def paint_around(pixel, paint, curr_color):
     '''
     Given a pixel and a color, paints the pixels around that have the same color as the pixel 
@@ -162,7 +146,6 @@ def paint_around(pixel, paint, curr_color):
                       'post color': paint['selected color'], 'pixels changed': []}
     paint_around_pixel(pixel, paint, curr_color, painted_pixels)
     return painted_pixels
-
 
 def paint_around_pixel(pixel, paint, color, painted_pixels):  # pixel = j,i
     '''Paints a pixel if it is the same color as the previous color of the pixel that was pressed.'''
@@ -184,64 +167,6 @@ def paint_around_pixel(pixel, paint, color, painted_pixels):  # pixel = j,i
             f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) + 1}', paint, color, painted_pixels)  # rigth
         paint_around_pixel(
             f'{int(pixel.split(",")[0])},{int(pixel.split(",")[1]) - 1}', paint, color, painted_pixels)  # left
-
-
-
-
-
-
-
-def undo_last_action(paint):
-    '''
-    Undo the last action done in the paint.
-    If no action was done, nothing happens.
-    '''
-    if not paint['done actions'].empty():  # if there is an action to undo
-        last_action = paint['done actions'].get_top()
-        if last_action['type'] == 'trash':
-            # if the last action was to clear the paint, the paint is restored to its previous state
-            for pixel in last_action['pixels']:
-                paint['pixels'][pixel]['color'] = last_action['pixels'][pixel]['color']
-        else:
-            for pixel in last_action['pixels changed']:
-                prev_color = last_action['prev color']
-                paint['pixels'][pixel]['color'] = prev_color
-        paint['undone actions'].push(paint['done actions'].pop())
-
-
-def redo_last_action(paint):
-    '''
-    Redo the last action undone in the paint.
-    If no action was undone, nothing happens.
-    '''
-    if not paint['undone actions'].empty():  # if there is an action to redo
-        last_action = paint['undone actions'].get_top()
-        if last_action['type'] != 'trash':    
-            for pixel in last_action['pixels changed']:
-                post_color = last_action['post color']
-                paint['pixels'][pixel]['color'] = post_color
-            paint['done actions'].push(paint['undone actions'].pop())
-
-
-def change_pixel_color(paint, x, y):
-    '''
-    Modifies the color of a pixel in the paint.
-    If the bucket is active, it paints the pixels around the pixel that was clicked.
-    '''
-    for pixel, pixel_data in paint['pixels'].items():
-        x1, y1, x2, y2 = pixel_data['pos']
-        if x1 < x <= x2 and y1 < y <= y2:
-            if paint['bucket']:
-                current_color = pixel_data['color']
-                paint['done actions'].push(paint_around(
-                    pixel, paint, current_color))
-            else:
-                prev_color = pixel_data['color']
-                pixel_data['color'] = post_color = paint['selected color']
-                paint['done actions'].push(
-                    {'type': 'pixel', 'prev color': prev_color, 'post color': post_color, 'pixels changed': [pixel]})
-
-
 
 def clicked_color(x_click):
     '''
@@ -270,8 +195,55 @@ def change_color_selected(paint, x):
         # if bucket or eraser is active and a color is clicked, it is deactivated
         paint['bucket'] = paint['eraser'] = False
         # if a color is clicked, the redo stack is cleared
-        paint['undone actions'].clear()  
+        paint['undone actions'].clear()
 
+def change_pixel_color(paint, x, y):
+    '''
+    Modifies the color of a pixel in the paint.
+    If the bucket is active, it paints the pixels around the pixel that was clicked.
+    '''
+    for pixel, pixel_data in paint['pixels'].items():
+        x1, y1, x2, y2 = pixel_data['pos']
+        if x1 < x <= x2 and y1 < y <= y2:
+            if paint['bucket']:
+                current_color = pixel_data['color']
+                paint['done actions'].push(paint_around(
+                    pixel, paint, current_color))
+            else:
+                prev_color = pixel_data['color']
+                pixel_data['color'] = post_color = paint['selected color']
+                paint['done actions'].push(
+                    {'type': 'pixel', 'prev color': prev_color, 'post color': post_color, 'pixels changed': [pixel]})
+
+def undo_last_action(paint):
+    '''
+    Undo the last action done in the paint.
+    If no action was done, nothing happens.
+    '''
+    if not paint['done actions'].empty():  # if there is an action to undo
+        last_action = paint['done actions'].get_top()
+        if last_action['type'] == 'trash':
+            # if the last action was to clear the paint, the paint is restored to its previous state
+            for pixel in last_action['pixels']:
+                paint['pixels'][pixel]['color'] = last_action['pixels'][pixel]['color']
+        else:
+            for pixel in last_action['pixels changed']:
+                prev_color = last_action['prev color']
+                paint['pixels'][pixel]['color'] = prev_color
+        paint['undone actions'].push(paint['done actions'].pop())
+
+def redo_last_action(paint):
+    '''
+    Redo the last action undone in the paint.
+    If no action was undone, nothing happens.
+    '''
+    if not paint['undone actions'].empty():  # if there is an action to redo
+        last_action = paint['undone actions'].get_top()
+        if last_action['type'] != 'trash':    
+            for pixel in last_action['pixels changed']:
+                post_color = last_action['post color']
+                paint['pixels'][pixel]['color'] = post_color
+            paint['done actions'].push(paint['undone actions'].pop())
 
 def activate_bucket(paint):
     '''
@@ -280,7 +252,6 @@ def activate_bucket(paint):
     if paint['selected color'] != '':
         # to activate the bucket you must first have a selected color
         paint['bucket'] = True
-
 
 def activate_eraser(paint):
     '''
@@ -292,6 +263,21 @@ def activate_eraser(paint):
     # if a custom color was selected, it is deactivated
     paint['custom colors selected'][0] = paint['custom colors selected'][1] = paint['custom colors selected'][2] = False
 
+def clear_paint(paint):
+    '''
+    Clears the whole paint and sets all the pixels in the default color.
+    '''
+    state_before_trash = {'type': 'trash', 'pixels': {}}
+    for pixel in paint['pixels']:
+        state_before_trash['pixels'][pixel] = paint['pixels'][pixel].copy()
+        paint['pixels'][pixel]['color'] = DEFAULT_PIXEL_COLOR
+    paint['done actions'].push(state_before_trash)
+
+def validate_color(color):
+    '''
+    Given a string, validates that it is a hexadecimal color
+    '''
+    return bool(re.match(r'^#[0-9a-fA-F]{6}$', color))
 
 def select_custom_color(paint):
     '''
@@ -321,30 +307,16 @@ def select_custom_color(paint):
         paint['curr custom box'] = (paint['curr custom box'] + 1) % len(custom_colors)
         paint['bucket'] = paint['eraser'] = False
 
-
 def change_color_to_custom(paint, n):
-    if n == 1 and paint['custom colors'][0] != 'white':
-        paint['custom colors selected'][0] = True
-        paint['custom colors selected'][1] = paint['custom colors selected'][2] = False
-        paint['selected color'] = paint['custom colors'][0]
-    elif n == 2 and paint['custom colors'][1] != 'white':
-        paint['custom colors selected'][1] = True
-        paint['custom colors selected'][0] = paint['custom colors selected'][2] = False
-
-        paint['selected color'] = paint['custom colors'][1]
-    elif n == 3 and paint['custom colors'][2] != 'white':
-        paint['custom colors selected'][2] = True
-        paint['custom colors selected'][0] = paint['custom colors selected'][1] = False
-        paint['selected color'] = paint['custom colors'][2]
+    custom_colors = paint['custom colors']
+    selected_colors = paint['custom colors selected']
+    if 0 <= n < len(custom_colors) and custom_colors[n] != 'white':
+        # Clear the selected state for the other custom boxes
+        for i in range(len(selected_colors)):
+            selected_colors[i] = (i == n)
+        # Set the selected color for the current custom box
+        paint['selected color'] = custom_colors[n]
     paint['bucket'] = paint['eraser'] = False
 
 
-def clear_paint(paint):
-    '''
-    Clears the whole paint and sets all the pixels in the default color.
-    '''
-    state_before_trash = {'type': 'trash', 'pixels': {}}
-    for pixel in paint['pixels']:
-        state_before_trash['pixels'][pixel] = paint['pixels'][pixel].copy()
-        paint['pixels'][pixel]['color'] = DEFAULT_PIXEL_COLOR
-    paint['done actions'].push(state_before_trash)
+
