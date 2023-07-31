@@ -1,16 +1,13 @@
-# Algopaint
-Paint implemented with python and gamelib
-<br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
     <img src="readme_images/logo.gif" alt="Logo" width="80" height="80">
   </a>
   <p align="center">
-    <strong>An awesome functional paint with some useful tools!</strong>
-    <br />
+    <h1> ALGOPAINT <h1 />
   </p>
 </div>
-
+      
+## About The Project
 ### Prerequisites
 * **Python 3**: Before running this application, please ensure that you have Python installed on your computer. You can download the latest stable version of Python from the official website: https://www.python.org/downloads/
 * **Note**: This application utilizes the "gamelib" library, which is already included in the code. You don't need to install any external dependencies separately.
