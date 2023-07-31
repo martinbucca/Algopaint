@@ -9,6 +9,6 @@ Paint implemented with python and gamelib
 2. Open a terminal (Command Prompt, PowerShell on Windows; Terminal on macOS/Linux).
 3. Navigate to the directory where "main.py" is located using the cd command. For example: `cd /path/to/your-repo` (replace "/path/to/your-repo" with the actual path to the directory where "main.py" is located).
 4. Run the application using the following command:
-```sh
-python3 main.py
-   ```
+   ```sh
+   python3 main.py
+      ```
