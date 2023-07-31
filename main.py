@@ -4,6 +4,7 @@ from ui import show_paint
 import logic as logic
 import event_handler as event
 
+
 def main():
     '''
     main function of the program
@@ -21,7 +22,7 @@ def main():
             if event.shortcut_color_clicked(x, y):
                 logic.change_color_selected(paint, x)
             elif event.pixel_clicked(x, y) and paint['selected color'] != '':
-                logic.change_pixel_color(paint, x, y)         
+                logic.change_pixel_color(paint, x, y)
             elif event.tool_bar_clicked(x, y):
                 event.handle_tool_clicked(paint, x)
             elif event.upload_ppm_clicked(x, y):
