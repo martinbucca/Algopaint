@@ -9,8 +9,8 @@
       
 ## About The Project
 <div style="display: flex;">
-  <img src="readme_images/chicken.png" alt="Chicken Image" style="flex: 1; margin-right: 10px;">
-  <img src="readme_images/pixeled_chicken.png" alt="Pixeled Chicken Image" style="flex: 1; margin-left: 10px;">
+  <img src="readme_images/chicken.png" alt="Chicken Image" style="width: 300px; margin-right: 10px;">
+  <img src="readme_images/pixeled_chicken.png" alt="Pixeled Chicken Image" style="width: 300px; margin-left: 10px;">
 </div>
 
 ### Prerequisites
