@@ -1,4 +1,4 @@
-from utils.constants import *
+from constants import *
 import gamelib as gamelib
 
 

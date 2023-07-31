@@ -2,7 +2,7 @@ from utils.png import PNG_IMAGE_SIZE, write
 import re
 from utils.stack import Stack
 import gamelib as gamelib
-from utils.constants import *
+from constants import *
 
 
 def calculate_pixel_position(i, j):

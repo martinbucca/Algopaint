@@ -1,5 +1,5 @@
 import gamelib as gamelib
-from utils.constants import *
+from constants import *
 from ui import show_paint
 import logic as logic
 import event_handler as event

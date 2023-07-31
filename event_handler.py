@@ -1,5 +1,5 @@
 import gamelib as gamelib
-from utils.constants import *
+from constants import *
 import logic as logic
 
 
