@@ -9,8 +9,8 @@ HEIGHT_INITIAL_IMAGE = 20  # the height of the initial image (m)
 PIXEL_ZONE = (40, 170)  # the zone where the pixels are drawn (x1, y1)
 PIXEL_SIZE = 20  # the size of the pixels
 # COLORS SHORTCUT BAR
-MAIN_COLORS = ('#000000', '#ff0000', '#FF8000', '#00ff00', '#32cd32',
-               '#ffd700', '#0000ff', '#1e90ff', '#ff69b4', '#8a2be2')
+MAIN_COLORS = ('#000000', '#ff0000', '#ff8000', '#00ff00', '#32cd32', 
+               '#ffff00', '#0000ff', '#1e90ff', '#ff69b4', '#8a2be2')
 HEIGHT_COLOR_BAR = (80, 115)
 WIDTH_COLOR_BAR = (40, 439.5)
 X1_FIRST_COLOR = 40
@@ -39,6 +39,6 @@ ERASER = (161.5, 196.5)
 PIXELED = (202, 237)
 TRASH = (242.5, 277.5)
 INPUT_COLORS = (283, 318)
-INPUT_COLOR_1 = (323.5, 358.5)
-INPUT_COLOR_2 =  (364.0, 399.0)
-INPUT_COLOR_3 = (404.5, 439.5)
+CUSTOM_COLOR_1 = (323.5, 358.5)
+CUSTOM_COLOR_2 =  (364.0, 399.0)
+CUSTOM_COLOR_3 = (404.5, 439.5)

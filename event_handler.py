@@ -39,7 +39,7 @@ def tool_bar_clicked(x, y):
     Returns True if any tool of the tool bar in the window was clicked.
     False otherwise
     '''
-    return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= INPUT_COLOR_3[1]
+    return HEIGHT_TOOL_BAR[0] <= y <= HEIGHT_TOOL_BAR[1] and UNDO[0] <= x <= CUSTOM_COLOR_3[1]
 
 
 def shortcut_color_clicked(x, y):
@@ -98,21 +98,21 @@ def custom_color1_clicked(x):
     Returns True if the custom color button in the window was clicked.
     False otherwise
     '''
-    return INPUT_COLOR_1[0] < x < INPUT_COLOR_1[1]
+    return CUSTOM_COLOR_1[0] < x < CUSTOM_COLOR_1[1]
 
 def custom_color2_clicked(x):
     '''
     Returns True if the custom color button in the window was clicked.
     False otherwise
     '''
-    return INPUT_COLOR_2[0] < x < INPUT_COLOR_2[1]
+    return CUSTOM_COLOR_2[0] < x < CUSTOM_COLOR_2[1]
 
 def custom_color3_clicked(x):
     '''
     Returns True if the custom color button in the window was clicked.
     False otherwise
     '''
-    return INPUT_COLOR_3[0] < x < INPUT_COLOR_3[1]
+    return CUSTOM_COLOR_3[0] < x < CUSTOM_COLOR_3[1]
 
 def handle_tool_clicked(paint, x):
     '''

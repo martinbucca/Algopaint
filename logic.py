@@ -162,7 +162,7 @@ def paint_around(pixel, paint, curr_color):
     to the current selected color in the paint
     '''
     # me guardo los pixeles pintados, el color anterior y el color al que fue pintado
-    painted_pixels = {'prev color': curr_color,
+    painted_pixels = {'type': 'bucket', 'prev color': curr_color,
                       'post color': paint['selected color'], 'pixels changed': []}
     paint_around_pixel(pixel, paint, curr_color, painted_pixels)
     return painted_pixels
@@ -198,19 +198,24 @@ def paint_around_pixel(pixel, paint, color, painted_pixels):  # pixel = j,i
 def undo_last_action(paint):
     if not paint['done actions'].empty():  # if there is an action to undo
         last_action = paint['done actions'].get_top()
-        for pixel in last_action['pixels changed']:
-            prev_color = last_action['prev color']
-            paint['pixels'][pixel]['color'] = prev_color
+        if last_action['type'] == 'trash':
+            for pixel in last_action['pixels']:
+                paint['pixels'][pixel]['color'] = last_action['pixels'][pixel]['color']
+        else:
+            for pixel in last_action['pixels changed']:
+                prev_color = last_action['prev color']
+                paint['pixels'][pixel]['color'] = prev_color
         paint['undone actions'].push(paint['done actions'].pop())
 
 
 def redo_last_action(paint):
     if not paint['undone actions'].empty():  # if there is an action to redo
         last_action = paint['undone actions'].get_top()
-        for pixel in last_action['pixels changed']:
-            post_color = last_action['post color']
-            paint['pixels'][pixel]['color'] = post_color
-        paint['done actions'].push(paint['undone actions'].pop())
+        if last_action['type'] != 'trash':    
+            for pixel in last_action['pixels changed']:
+                post_color = last_action['post color']
+                paint['pixels'][pixel]['color'] = post_color
+            paint['done actions'].push(paint['undone actions'].pop())
 
 
 def change_pixel_color(paint, x, y):
@@ -226,7 +231,7 @@ def change_pixel_color(paint, x, y):
                 pixel_data['color'] = paint['selected color']
                 post_color = pixel_data['color']
                 paint['done actions'].push(
-                    {'prev color': prev_color, 'post color': post_color, 'pixels changed': [pixel]})
+                    {'type': 'pixel', 'prev color': prev_color, 'post color': post_color, 'pixels changed': [pixel]})
 
 
 
@@ -307,5 +312,8 @@ def change_color_to_custom(paint, n):
 
 
 def clear_paint(paint):
+    state_before_trash = {'type': 'trash', 'pixels': {}}
     for pixel in paint['pixels']:
+        state_before_trash['pixels'][pixel] = paint['pixels'][pixel].copy()
         paint['pixels'][pixel]['color'] = DEFAULT_PIXEL_COLOR
+    paint['done actions'].push(state_before_trash)
