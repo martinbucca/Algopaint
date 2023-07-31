@@ -8,6 +8,11 @@
 </div>
       
 ## About The Project
+<div style="display: flex;">
+  <img src="readme_images/chicken.png" alt="Chicken Image" style="flex: 1; margin-right: 10px;">
+  <img src="readme_images/pixeled_chicken.png" alt="Pixeled Chicken Image" style="flex: 1; margin-left: 10px;">
+</div>
+
 ### Prerequisites
 * **Python 3**: Before running this application, please ensure that you have Python installed on your computer. You can download the latest stable version of Python from the official website: https://www.python.org/downloads/
 * **Note**: This application utilizes the "gamelib" library, which is already included in the code. You don't need to install any external dependencies separately.
