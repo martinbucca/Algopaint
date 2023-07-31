@@ -306,21 +306,19 @@ def select_custom_color(paint):
         gamelib.say(
             'Invalid color, you should enter something like this: #00ff23. Do not forget to include "#" at the beginning')
     else:
-        if paint['curr custom box'] == 0:
-            paint['custom colors selected'][0] = True
-            paint['custom colors selected'][1] = paint['custom colors selected'][2] = False
-            paint['selected color'] = paint['custom colors'][0] = color
-            paint['curr custom box'] = 1
-        elif paint['curr custom box'] == 1:
-            paint['custom colors selected'][1] = True
-            paint['custom colors selected'][0] = paint['custom colors selected'][2] = False
-            paint['selected color'] = paint['custom colors'][1] = color
-            paint['curr custom box'] = 2
-        elif paint['curr custom box'] == 2:
-            paint['custom colors selected'][2] = True
-            paint['custom colors selected'][0] = paint['custom colors selected'][1] = False
-            paint['selected color'] = paint['custom colors'][2] = color
-            paint['curr custom box'] = 0
+        custom_colors = paint['custom colors']
+        selected_colors = paint['custom colors selected']
+        curr_box = paint['curr custom box']
+        # Update the selected state for the current custom box
+        selected_colors[curr_box] = True
+        # Set the selected color for the current custom box
+        paint['selected color'] = custom_colors[curr_box] = color
+        # Clear the selected state for the other custom boxes
+        for i in range(len(selected_colors)):
+            if i != curr_box:
+                selected_colors[i] = False
+        # Move to the next custom box
+        paint['curr custom box'] = (paint['curr custom box'] + 1) % len(custom_colors)
         paint['bucket'] = paint['eraser'] = False
 
 
