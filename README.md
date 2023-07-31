@@ -1,5 +1,15 @@
 # Algopaint
 Paint implemented with python and gamelib
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+  <p align="center">
+    <strong>An awesome functional paint with some useful tools!</strong>
+    <br />
+  </p>
+</div>
 
 ### Prerequisites
 * **Python 3**: Before running this application, please ensure that you have Python installed on your computer. You can download the latest stable version of Python from the official website: https://www.python.org/downloads/
