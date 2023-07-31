@@ -142,24 +142,24 @@ def show_input_color(paint):
                            HEIGHT_TOOL_BAR[1], outline='black', activeoutline='black', activewidth=3)
     gamelib.draw_image('icons/palette.ppm',
                        INPUT_COLORS[0] + 6, HEIGHT_TOOL_BAR[0] + 7)
-    if paint['entered color 1 selected'] and paint['entered color 1'] != 'white':
+    if paint['custom colors selected'][0] and paint['custom colors'][0] != 'white':
         gamelib.draw_rectangle(CUSTOM_COLOR_1[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_1[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 1'], outline='black', width=4)
+                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][0], outline='black', width=4)
     else:
         gamelib.draw_rectangle(CUSTOM_COLOR_1[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_1[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 1'], outline='black')
-    if paint['entered color 2 selected'] and paint['entered color 2'] != 'white':
+                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][0], outline='black')
+    if paint['custom colors selected'][1] and paint['custom colors'][1] != 'white':
         gamelib.draw_rectangle(CUSTOM_COLOR_2[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_2[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 2'], outline='black', width=4)
+                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][1], outline='black', width=4)
     else:
         gamelib.draw_rectangle(CUSTOM_COLOR_2[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_2[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 2'], outline='black')
-    if paint['entered color 3 selected'] and paint['entered color 3'] != 'white':
+                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][1], outline='black')
+    if paint['custom colors selected'][2] and paint['custom colors'][2] != 'white':
         gamelib.draw_rectangle(CUSTOM_COLOR_3[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_3[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 3'], outline='black', width=4)
+                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][2], outline='black', width=4)
     else:
         gamelib.draw_rectangle(CUSTOM_COLOR_3[0], HEIGHT_TOOL_BAR[0], CUSTOM_COLOR_3[1],
-                               HEIGHT_TOOL_BAR[1], fill=paint['entered color 3'], outline='black')
+                               HEIGHT_TOOL_BAR[1], fill=paint['custom colors'][2], outline='black')
 
 
 def show_paint(paint):

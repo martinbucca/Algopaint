@@ -26,13 +26,9 @@ def new_paint():
         'height': HEIGHT_INITIAL_IMAGE,
         'intensity': 255,
         'selected color': '',
-        'entered color 1': 'white',
-        'entered color 2': 'white',
-        'entered color 3': 'white',
         'curr custom box': 0,
-        'entered color 1 selected': False,
-        'entered color 2 selected': False,
-        'entered color 3 selected': False,
+        'custom colors': ['white', 'white', 'white'],
+        'custom colors selected': [False, False, False],
         'bucket': False,
         'eraser': False,
         'pixeled': True,
@@ -196,9 +192,14 @@ def paint_around_pixel(pixel, paint, color, painted_pixels):  # pixel = j,i
 
 
 def undo_last_action(paint):
+    '''
+    Undo the last action done in the paint.
+    If no action was done, nothing happens.
+    '''
     if not paint['done actions'].empty():  # if there is an action to undo
         last_action = paint['done actions'].get_top()
         if last_action['type'] == 'trash':
+            # if the last action was to clear the paint, the paint is restored to its previous state
             for pixel in last_action['pixels']:
                 paint['pixels'][pixel]['color'] = last_action['pixels'][pixel]['color']
         else:
@@ -209,6 +210,10 @@ def undo_last_action(paint):
 
 
 def redo_last_action(paint):
+    '''
+    Redo the last action undone in the paint.
+    If no action was undone, nothing happens.
+    '''
     if not paint['undone actions'].empty():  # if there is an action to redo
         last_action = paint['undone actions'].get_top()
         if last_action['type'] != 'trash':    
@@ -219,6 +224,10 @@ def redo_last_action(paint):
 
 
 def change_pixel_color(paint, x, y):
+    '''
+    Modifies the color of a pixel in the paint.
+    If the bucket is active, it paints the pixels around the pixel that was clicked.
+    '''
     for pixel, pixel_data in paint['pixels'].items():
         x1, y1, x2, y2 = pixel_data['pos']
         if x1 < x <= x2 and y1 < y <= y2:
@@ -228,15 +237,16 @@ def change_pixel_color(paint, x, y):
                     pixel, paint, current_color))
             else:
                 prev_color = pixel_data['color']
-                pixel_data['color'] = paint['selected color']
-                post_color = pixel_data['color']
+                pixel_data['color'] = post_color = paint['selected color']
                 paint['done actions'].push(
                     {'type': 'pixel', 'prev color': prev_color, 'post color': post_color, 'pixels changed': [pixel]})
 
 
 
 def clicked_color(x_click):
-    '''Returns the color that was clicked. If no color was clicked, returns None.'''
+    '''
+    Returns the color that was clicked. If no color was clicked, returns None.
+    '''
     for i, color in enumerate(MAIN_COLORS):
         distance_to_first_color_x1 = (
             WIDTH_COLOR_BOX + SEPARATION_BETWEEN_COLORS) * i
@@ -247,27 +257,47 @@ def clicked_color(x_click):
     return None
 
 def change_color_selected(paint, x):
+    '''
+    Changes the selected color in the paint.
+    Only works in the shortcut colors bar.
+    If a custom color is selected, it is deactivated.
+    '''
     color = clicked_color(x)
     if color:
         paint['selected color'] = color
+        # if a custom color was selected, it is deactivated
+        paint['custom colors selected'][0] = paint['custom colors selected'][1] = paint['custom colors selected'][2] = False
         # if bucket or eraser is active and a color is clicked, it is deactivated
-        paint['entered color 1 selected'] = paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
         paint['bucket'] = paint['eraser'] = False
-        paint['undone actions'].clear()  # if a color is clicked, the redo stack is cleared
+        # if a color is clicked, the redo stack is cleared
+        paint['undone actions'].clear()  
 
 
 def activate_bucket(paint):
+    '''
+    If the paint has a selected color, activates the bucket.
+    '''
     if paint['selected color'] != '':
         # to activate the bucket you must first have a selected color
         paint['bucket'] = True
+
+
 def activate_eraser(paint):
+    '''
+    Activates the eraser with the default color.
+    '''
     paint['eraser'] = True
     paint['selected color'] = DEFAULT_PIXEL_COLOR
     paint['bucket'] = False
-    paint['entered color 1 selected'] = paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
+    # if a custom color was selected, it is deactivated
+    paint['custom colors selected'][0] = paint['custom colors selected'][1] = paint['custom colors selected'][2] = False
 
 
 def select_custom_color(paint):
+    '''
+    Sets the selected color to the custom color that was entered.
+    If the custom color is not valid, an error message is displayed.
+    '''
     color = gamelib.input(
         'Enter a color in hexadecimal code (#RRGGBB)')
     if color == None:
@@ -277,41 +307,44 @@ def select_custom_color(paint):
             'Invalid color, you should enter something like this: #00ff23. Do not forget to include "#" at the beginning')
     else:
         if paint['curr custom box'] == 0:
-            paint['entered color 1 selected'] = True
-            paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
-            paint['selected color'] = paint['entered color 1'] = color
+            paint['custom colors selected'][0] = True
+            paint['custom colors selected'][1] = paint['custom colors selected'][2] = False
+            paint['selected color'] = paint['custom colors'][0] = color
             paint['curr custom box'] = 1
         elif paint['curr custom box'] == 1:
-            paint['entered color 2 selected'] = True
-            paint['entered color 1 selected'] = paint['entered color 3 selected'] = False
-            paint['selected color'] = paint['entered color 2'] = color
+            paint['custom colors selected'][1] = True
+            paint['custom colors selected'][0] = paint['custom colors selected'][2] = False
+            paint['selected color'] = paint['custom colors'][1] = color
             paint['curr custom box'] = 2
         elif paint['curr custom box'] == 2:
-            paint['entered color 3 selected'] = True
-            paint['entered color 1 selected'] = paint['entered color 2 selected'] = False
-            paint['selected color'] = paint['entered color 3'] = color
+            paint['custom colors selected'][2] = True
+            paint['custom colors selected'][0] = paint['custom colors selected'][1] = False
+            paint['selected color'] = paint['custom colors'][2] = color
             paint['curr custom box'] = 0
         paint['bucket'] = paint['eraser'] = False
 
 
 def change_color_to_custom(paint, n):
-    if n == 1:
-        paint['entered color 1 selected'] = True
-        paint['entered color 2 selected'] = paint['entered color 3 selected'] = False
-        paint['selected color'] = paint['entered color 1']
-    elif n == 2:
-        paint['entered color 2 selected'] = True
-        paint['entered color 1 selected'] = paint['entered color 3 selected'] = False
+    if n == 1 and paint['custom colors'][0] != 'white':
+        paint['custom colors selected'][0] = True
+        paint['custom colors selected'][1] = paint['custom colors selected'][2] = False
+        paint['selected color'] = paint['custom colors'][0]
+    elif n == 2 and paint['custom colors'][1] != 'white':
+        paint['custom colors selected'][1] = True
+        paint['custom colors selected'][0] = paint['custom colors selected'][2] = False
 
-        paint['selected color'] = paint['entered color 2']
-    elif n == 3:
-        paint['entered color 3 selected'] = True
-        paint['entered color 1 selected'] = paint['entered color 2 selected'] = False
-        paint['selected color'] = paint['entered color 3']
+        paint['selected color'] = paint['custom colors'][1]
+    elif n == 3 and paint['custom colors'][2] != 'white':
+        paint['custom colors selected'][2] = True
+        paint['custom colors selected'][0] = paint['custom colors selected'][1] = False
+        paint['selected color'] = paint['custom colors'][2]
     paint['bucket'] = paint['eraser'] = False
 
 
 def clear_paint(paint):
+    '''
+    Clears the whole paint and sets all the pixels in the default color.
+    '''
     state_before_trash = {'type': 'trash', 'pixels': {}}
     for pixel in paint['pixels']:
         state_before_trash['pixels'][pixel] = paint['pixels'][pixel].copy()
