@@ -30,7 +30,7 @@ The paint application offers the following set of tools and features:
 * **Bucket Fill**: An option to fill a contiguous area of pixels with a selected color, similar to a paint bucket tool.
 * **Eraser**: An eraser tool to remove specific color pixels.
 * **Pixels Border Visibility**: Users can choose whether to display the borders of pixels for a better visual experience.
-* **Clear All**: A button to clear the entire imaage, allowing users to start fresh.
+* **Clear All**: A button to clear the entire image, allowing users to start fresh.
 * **Custom Color Palette**: Users can enter custom colors in the format "#rrggbb" (hexadecimal) to create and use their preferred colors. The palette can store up to three custom colors at a time as a shortcut.
   
 ## Prerequisites
