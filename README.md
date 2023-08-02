@@ -20,7 +20,7 @@
 </div>
 
 ### Overview
-This project is a simple paint application implemented in Python using the 'gamelib' library, which is based on Tkinter. The paint application provides a user-friendly interface to draw and create digital art with various tools and features.
+This project is a simple paint application implemented in Python using the `gamelib` library, which is based on Tkinter. The paint application provides a user-friendly interface to draw and create digital art with various tools and features.
 ### Features
 The paint application offers the following set of tools and features:
 
