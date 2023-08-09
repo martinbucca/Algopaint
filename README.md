@@ -1,10 +1,10 @@
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="readme_images/logo.gif" alt="Logo" width="80" height="80">
-  </a>
   <p align="center">
     <h1> ALGOPAINT <h1 />
   </p>
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="readme_images/logo.gif" alt="Logo" width="80" height="80">
+  </a>
 </div>
       
 ## About The Project
